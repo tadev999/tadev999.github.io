@@ -1,0 +1,76 @@
+---
+/**
+ * Docs index — shows a card grid of all top-level tutorials.
+ * Each tutorial is a top-level folder in src/data/docs/.
+ */
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { SITE } from "@/config";
+
+// Get all docs entries
+const allDocs = await getCollection("docs");
+
+// Astro strips /index suffix from IDs, so "vibe-coding/index.md" → ID = "vibe-coding"
+// Top-level tutorials = entries with no slash in their ID (single segment)
+const tutorials = allDocs
+  .filter(entry => !entry.id.includes("/"))
+  .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99));
+
+// Count pages per tutorial
+function countPages(slug: string) {
+  return allDocs.filter(e => e.id.startsWith(slug + "/") && !e.id.endsWith("/index")).length;
+}
+---
+
+<Layout title={`Articles | ${SITE.title}`} description="Danh sách các chuyên mục chia sẻ về coding, project management và developer workflow.">
+  <Header />
+  <main id="main-content" class="app-layout py-12">
+    <div class="mb-10">
+      <h1 class="text-3xl font-bold sm:text-4xl">Articles</h1>
+      <p class="mt-3 text-foreground/60">
+        Các chuyên mục chia sẻ thực chiến về coding, workflow và developer mindset.
+      </p>
+    </div>
+
+    {tutorials.length === 0 ? (
+      <p class="text-foreground/50 italic">Chưa có bài viết nào.</p>
+    ) : (
+      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {tutorials.map(tutorial => {
+          // tutorial.id = "vibe-coding" (Astro strips /index suffix)
+          const folderSlug = tutorial.id;
+          // Count sub-pages: entries that start with "vibe-coding/" 
+          const pageCount = allDocs.filter(e => e.id.startsWith(folderSlug + "/")).length;
+          const href = `/docs/${folderSlug}`;
+
+          return (
+            <a
+              href={href}
+              class="group flex flex-col gap-3 rounded-xl border border-border bg-background p-6 shadow-sm transition-all hover:border-accent hover:shadow-md"
+            >
+              {tutorial.data.icon && (
+                <span class="text-3xl" aria-hidden="true">{tutorial.data.icon}</span>
+              )}
+              <div>
+                <h2 class="text-lg font-semibold group-hover:text-accent transition-colors">
+                  {tutorial.data.title}
+                </h2>
+                {tutorial.data.description && (
+                  <p class="mt-1.5 text-sm text-foreground/60 line-clamp-3">
+                    {tutorial.data.description}
+                  </p>
+                )}
+              </div>
+              <div class="mt-auto pt-2 text-xs text-foreground/40">
+                {pageCount} bài học
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    )}
+  </main>
+  <Footer />
+</Layout>

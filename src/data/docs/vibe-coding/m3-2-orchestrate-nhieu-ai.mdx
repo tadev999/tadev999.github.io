@@ -1,0 +1,104 @@
+---
+title: "3.2 · Multi-agent: Orchestrate nhiều AI"
+description: "Chia task cho nhiều agent chạy song song. Kiến trúc phối hợp giữa Reasoning Model (vai trò Architect/Reviewer) và các Coding Agents (vai trò Thực thi) để tăng tốc phát triển."
+pubDatetime: 2025-01-27
+tags: ["vibe-coding", "spec-driven", "ai", "multi-agent", "expert", "giai-doan-3"]
+order: 11
+---
+
+# 3.2 · Multi-agent: Orchestrate nhiều AI
+
+> **Mục tiêu:** Hiểu và tổ chức được quy trình phân chia task cho nhiều AI Agents hoạt động đồng thời (song song), tăng tốc độ phát triển dự án lên gấp bội mà không gây xung đột (conflict).
+
+---
+
+## Tại sao cần Multi-agent?
+
+Khi bạn làm việc với một Coding Agent duy nhất (như Cursor, Kiro), tốc độ phát triển bị giới hạn bởi:
+1. **Tốc độ sinh text của API:** LLM vẫn cần thời gian để in ra từng dòng code.
+2. **Context Window nghẽn cổ chai:** Nếu yêu cầu agent làm quá nhiều việc liên tiếp, bộ nhớ ngữ cảnh của nó bắt đầu đầy, sinh ra code sai hoặc quên logic cũ.
+3. **Tuần tự (Sequential):** Bạn phải đợi agent code xong backend rồi mới nhờ nó code tiếp frontend.
+
+**Multi-agent Orchestration** (Điều phối nhiều tác nhân AI) giải quyết vấn đề này bằng cách chia hệ thống thành các phần độc lập và giao cho nhiều AI khác nhau xử lý cùng lúc.
+
+---
+
+## Kiến trúc Multi-agent tiêu chuẩn
+
+Trong mô hình này, chúng ta không để các AI tự do làm việc. Chúng ta cần sự phân cấp giống như một team dev thực thụ:
+
+```text
+Architect (Reasoning Model - vd: Claude 3.5 Sonnet / GPT-4o)
+├── Agent A: Frontend feature (Coding Agent - vd: Cursor)
+├── Agent B: Backend API      (Coding Agent - vd: Kiro)
+├── Agent C: Database         (Coding Agent - vd: Trae)
+└── Reviewer                  (Reasoning Model - chạy tự động hoặc thủ công)
+```
+
+### 1. Vai trò của Architect (Reasoning Model)
+Bạn (cùng với Claude/ChatGPT) đóng vai trò là Tech Lead/Architect.
+- **Nhiệm vụ:** Đọc Requirement, phân tách thành các **Spec phân tầng** (như đã học ở bài 3.1).
+- **Phân chia Task:** Architect sẽ thiết kế ra các giao kèo (Contracts). Ví dụ: API sẽ có endpoint là gì, input/output ra sao (JSON schema).
+
+### 2. Vai trò của Executor (Coding Agents)
+Đây là những "thợ xây" miệt mài.
+- **Nhiệm vụ:** Nhận một file Spec cụ thể (ví dụ `Feature_Login_Frontend.md`) và thực thi nó.
+- **Độc lập:** Agent A code frontend dựa trên API Contract, không cần biết Agent B (đang làm backend) đã code xong chưa (Mocking).
+
+### 3. Vai trò của Reviewer (Reasoning Model)
+- **Nhiệm vụ:** Sau khi các Agents hoàn thành, Reviewer (một session khác của LLM mạnh về suy luận) sẽ nhận output (Code) và đối chiếu lại với Spec ban đầu.
+
+---
+
+## Nguyên tắc phân chia Task để tránh Conflict
+
+Để nhiều agent có thể code cùng lúc trên cùng một codebase mà không giẫm chân lên nhau (merge conflict), bạn phải tuân thủ nghiêm ngặt các nguyên tắc sau:
+
+### 1. Phân tách theo ranh giới cứng (Hard Boundaries)
+- **Tuyệt đối không** giao 2 agent cùng sửa 1 file cùng lúc.
+- **Cách chia tốt:** Agent A làm việc ở thư mục `/frontend`, Agent B làm việc ở thư mục `/backend`.
+- **Cách chia tốt:** Agent A làm `/components/User`, Agent B làm `/components/Product`.
+
+### 2. Thống nhất "Giao kèo" (Contract-First) trước khi code
+Sự phối hợp chỉ thành công nếu mọi Agent đều đồng ý về điểm giao tiếp.
+- Dùng AI Architect để sinh ra file `api_contract.json` hoặc `types.ts` đầu tiên.
+- **Giao cho Frontend Agent:** "Đây là file Types/Giao diện. Hãy code UI sử dụng dữ liệu giả (mock data) tuân theo Types này."
+- **Giao cho Backend Agent:** "Đây là file Types. Hãy viết API trả về dữ liệu tuân thủ đúng định dạng này."
+
+---
+
+## Đồng bộ hóa (Synchronization)
+
+Khi các agents code xong phần độc lập, đến lúc cần ghép chúng lại với nhau (Merge & Integrate).
+
+1. **Test độc lập trước:**
+   - Yêu cầu Backend Agent tự sinh unit test và chạy pass.
+   - Yêu cầu Frontend Agent chạy nghiệm thu giao diện (storybook/preview).
+2. **Cung cấp Context cho nhau (Context Merging):**
+   - Khi cần tích hợp, nếu Frontend gọi API thực tế bị lỗi, hãy copy file API Controller (do Backend Agent viết) ném vào làm context cho Frontend Agent và bảo: *"Hàm API thực tế trông như thế này, nhưng UI đang gọi sai, hãy fix file liên kết."*
+
+---
+
+## Xử lý khi một Agent bị "Lạc lối" (Hallucination Loop)
+
+Đôi khi, một Coding Agent bị kẹt trong vòng lặp sửa lỗi vô tận: nó viết code sai -> chạy lỗi -> tự đọc lỗi -> tự sửa -> lại sai tiếp.
+
+**Quy trình can thiệp (Intervention):**
+1. **Dừng Agent lại (Stop/Halt):** Đừng để nó chạy lan man làm hỏng file.
+2. **Kéo Reviewer (Reasoning Model) vào cuộc:**
+   - Copy đoạn code lỗi và log lỗi.
+   - Sang Claude/ChatGPT (môi trường không bị nhiễu bởi lịch sử chat quá dài của Agent) hỏi: *"Đoạn code này bị lỗi X. Vấn đề gốc rễ là gì?"*
+3. **Reset Context cho Agent:**
+   - Quay lại Coding Agent, clear lịch sử chat hiện tại (tạo luồng mới).
+   - Feed lại Spec + Lời giải từ Claude vào: *"Bắt đầu lại task này. Lỗi trước đó là do [lời giải]. Hãy viết lại hàm này cho đúng."*
+
+---
+
+## Tóm tắt
+
+1. **Phân vai rõ ràng:** Dùng Reasoning Model làm não (kiến trúc, chia task, review), dùng Coding Agents làm tay chân (sinh code, quản lý file).
+2. **Contract-First:** Luôn thiết kế API/Types trước để các agents có điểm neo chung.
+3. **Tránh Conflict:** Phân chia task sao cho mỗi agent thao tác trên các vùng không gian (thư mục/file) riêng biệt.
+4. **Biết lúc nào nên can thiệp:** Dùng Reasoning Model tĩnh để gỡ rối khi Coding Agent rơi vào vòng lặp lỗi.
+
+Kỹ năng điều phối này biến bạn từ một "Developer có AI hỗ trợ" thành một **Tech Lead của đội ngũ AI**. Ở bài tiếp theo, chúng ta sẽ học cách đưa những quy trình này thành "luật" cho cả một team con người.

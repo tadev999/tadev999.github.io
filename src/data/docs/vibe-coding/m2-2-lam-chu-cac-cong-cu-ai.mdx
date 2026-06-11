@@ -1,0 +1,319 @@
+---
+title: "2.2 · Làm chủ các công cụ AI"
+description: "Biết dùng đúng công cụ đúng việc — kết hợp Reasoning Model (như Claude) + Coding Agent (như Cursor, Kiro) để tối đa hoá hiệu quả."
+pubDatetime: 2025-01-25
+tags: ["vibe-coding", "spec-driven", "ai", "developer", "giai-doan-2"]
+order: 9
+---
+
+# 2.2 · Làm chủ các công cụ AI
+
+> **Mục tiêu:** Biết dùng đúng công cụ đúng việc, kết hợp Reasoning Model và Coding Agent trong 1 dự án.
+
+
+---
+
+## Phân vai: Reasoning Model vs Coding Agent
+
+<div class="tools-comparison">
+
+| Nhóm Công cụ | Ví dụ | Thế mạnh | Dùng cho | Hạn chế |
+|---------|----------|----------|----------|---------|
+| **Reasoning Model** | Claude, ChatGPT, Gemini | Nghiên cứu, thiết kế, viết spec, review | Brainstorm, viết PRD, review code, debug logic | Không trực tiếp chạy code, quản lý thư mục khó khăn |
+| **Coding Agent** | Cursor, Kiro, Trae, Antigravity | Code generation, task tracking, iteration | Generate feature, refactor, test, file management | Ít "creative" hơn, thường giới hạn ngữ cảnh (context) nhỏ hơn |
+
+</div>
+
+**Nguyên tắc vàng:** Dùng Reasoning Model để **nghĩ** (viết spec, lên kiến trúc), dùng Coding Agent để **làm** (code, tạo file, chạy thử).
+
+---
+
+## Workflow kết hợp
+
+<div class="workflow-diagram">
+
+```
+Reasoning Model viết spec → Coding Agent execute → Reasoning Model review → Coding Agent fix → Ship
+```
+
+</div>
+
+### Bước 1: Claude viết Spec
+
+**Tại sao dùng Claude:**
+- Context window lớn (200K tokens) — đọc được cả codebase
+- Tốt cho brainstorm và thiết kế
+- Có thể hỏi "tại sao" và nhận giải thích chi tiết
+
+**Prompt gợi ý:**
+
+```
+Tôi cần viết spec cho feature [tên feature].
+
+Context:
+- App hiện tại: [mô tả ngắn]
+- Tech stack: [React, Node.js, PostgreSQL, ...]
+- User: [ai sẽ dùng feature này]
+
+Requirement:
+[paste requirement từ PM]
+
+Hãy giúp tôi viết spec đầy đủ với:
+1. Goals & Non-goals
+2. User stories
+3. Technical design
+4. Edge cases
+5. Acceptance criteria
+```
+
+---
+
+### Bước 2: Coding Agent execute
+
+**Tại sao dùng Coding Agent (như Cursor, Kiro, Trae):**
+- Tích hợp IDE — tạo/sửa file trực tiếp vào project
+- Có thể chạy preview hoặc terminal realtime — nghiệm thu kết quả ngay
+- Quản lý nhiều tác vụ/file cùng lúc
+
+**Workflow trong Coding Agent:**
+
+1. **Paste spec** vào giao diện chat của Agent
+2. **Yêu cầu generate:** "Dựa vào spec trên, implement feature này"
+3. **Agent tự động thao tác:** sinh code vào components, API, tests
+4. **Preview & test** nghiệm thu
+5. **Iterate** (yêu cầu sửa thêm) nếu cần thiết
+
+---
+
+### Bước 3: Reasoning Model review
+
+**Tại sao dùng Reasoning Model (như Claude) để review:**
+- Nhìn big picture tốt hơn nhờ context window rộng và chuyên về lý luận
+- Phát hiện logic bug, security issue
+- Suggest improvement
+- Review khách quan, độc lập với tool đã sinh ra code (đóng vai trò cross-check)
+
+**Prompt gợi ý:**
+
+```
+Review code này cho tôi:
+
+[paste code từ Coding Agent]
+
+Spec ban đầu:
+[paste spec]
+
+Kiểm tra:
+1. Code có đúng spec không?
+2. Có bug logic nào không?
+3. Có security issue không?
+4. Có thể improve như thế nào?
+```
+
+---
+
+### Bước 4: Coding Agent fix
+
+Dựa vào feedback từ Reasoning Model, quay lại Coding Agent để thực thi việc sửa chữa.
+
+**Prompt trong Coding Agent:**
+
+```
+Review và suggest từ AI:
+[paste feedback từ Reasoning Model]
+
+Hãy sửa code theo feedback trên.
+```
+
+---
+
+## Tối ưu Context Window
+
+Context window = lượng text AI có thể "nhớ" trong 1 conversation.
+
+### Claude: 200K tokens (~150K words)
+
+**Chiến lược:**
+- Paste cả codebase nếu cần (dưới 50 files)
+- Dùng cho design decision lớn
+- Không sợ context quá dài
+
+---
+
+### Kiro: ~32K tokens (~24K words)
+
+**Chiến lược:**
+- Chỉ cung cấp file liên quan
+- Chia task nhỏ (1 task = 1–2 files)
+- Dùng `#File` để reference file cụ thể
+
+**Ví dụ tốt:**
+
+```
+Sửa validation logic trong @UserForm.tsx
+theo spec này: [paste spec ngắn gọn]
+```
+
+**Ví dụ xấu:**
+
+```
+Sửa toàn bộ user module [paste 10 files + spec dài]
+```
+
+---
+
+## Prompting Patterns cho Developer
+
+### 1 · Few-shot Prompting
+
+Cung cấp ví dụ để AI học pattern.
+
+**Ví dụ:**
+
+```
+Tạo API endpoint theo pattern này:
+
+// Ví dụ có sẵn:
+router.post('/users', validateUser, async (req, res) => {
+  const user = await User.create(req.body);
+  res.json({ success: true, data: user });
+});
+
+// Tạo tương tự cho:
+POST /products - create product
+GET /products/:id - get product by ID
+```
+
+---
+
+### 2 · Chain-of-Thought
+
+Yêu cầu AI giải thích từng bước.
+
+**Ví dụ:**
+
+```
+Implement feature "Add to Cart" theo spec.
+
+Trước khi code, hãy:
+1. Liệt kê các bước cần làm
+2. Xác định file nào cần tạo/sửa
+3. Giải thích logic chính
+
+Sau đó mới generate code.
+```
+
+**Lợi ích:** Phát hiện sai sót sớm, dễ debug.
+
+---
+
+### 3 · Role Prompting
+
+Gán role cụ thể cho AI.
+
+**Ví dụ:**
+
+```
+Bạn là senior React developer với 5 năm kinh nghiệm.
+
+Review component này và suggest best practices:
+[paste code]
+```
+
+**Kết quả:** AI sẽ apply kiến thức senior-level.
+
+---
+
+## Case Study: Build Feature "User Authentication"
+
+<div class="case-study">
+
+### Phase 1: Spec với Claude
+
+**Prompt:**
+> "Viết spec cho feature User Authentication (email/password). App là React + Node.js + PostgreSQL."
+
+**Output:** Spec 3 trang với:
+- Goals: secure auth, JWT-based
+- User stories: register, login, logout, forgot password
+- Technical design: bcrypt, JWT, refresh token
+- Edge cases: email đã tồn tại, password quá yếu, token expired
+- Acceptance criteria: 12 items
+
+**Thời gian:** 15 phút
+
+---
+
+### Phase 2: Execute với Kiro
+
+**Prompt:**
+> "Implement feature User Authentication theo spec trên. Tạo:
+> 1. Backend: auth routes, middleware, controllers
+> 2. Frontend: Login/Register forms, auth context
+> 3. Tests: unit + integration"
+
+**Output:** Kiro tạo 15 files, chạy được ngay.
+
+**Thời gian:** 30 phút
+
+---
+
+### Phase 3: Review với Claude
+
+**Prompt:**
+> "Review code auth này. Kiểm tra security và best practices."
+
+**Feedback từ Claude:**
+- ✅ Password hashing đúng
+- ❌ Thiếu rate limiting cho login
+- ❌ JWT secret nên dùng env variable
+- ⚠️ Refresh token nên có expiry
+
+**Thời gian:** 10 phút
+
+---
+
+### Phase 4: Fix với Kiro
+
+**Prompt:**
+> "Sửa theo feedback của Claude: thêm rate limiting, move JWT secret to .env, add refresh token expiry."
+
+**Output:** Code đã fix, pass review.
+
+**Thời gian:** 15 phút
+
+---
+
+**Tổng thời gian:** 70 phút (so với 2–3 ngày nếu code thủ công)
+
+</div>
+
+---
+
+## Thực hành với quy trình kết hợp
+
+Quy trình Reasoning Model → Coding Agent → Reasoning Model review phát huy hiệu quả tốt nhất với các feature nhỏ đến trung bình. Hãy thử với một feature như Todo CRUD, Comment system, hoặc Search bar.
+
+**Workflow hiệu quả:**
+1. Dùng mô hình chat (Claude, ChatGPT) viết spec chi tiết
+2. Dùng Coding Agent (Cursor, Kiro, Trae) implement theo spec
+3. Dùng mô hình chat review code và đưa ra feedback
+4. Dùng Coding Agent fix theo feedback (nếu cần)
+
+**Những điều đáng chú ý:**
+- Lưu lại prompt cho mỗi bước để tái sử dụng
+- Đo thời gian mỗi phase để so sánh với code thủ công
+- Ghi chú lại những gì hiệu quả và chưa hiệu quả
+- Thử nghiệm với các prompting patterns khác nhau
+
+**Kết quả mong đợi:**
+- Spec đầy đủ và rõ ràng từ Reasoning Model
+- Code chạy được và đúng spec từ Coding Agent
+- Review chi tiết với feedback cụ thể từ AI độc lập
+- Code đã được cải thiện sau review
+
+---
+
+## Tiếp theo
+
+Bạn đã biết cách dùng công cụ hiệu quả. Bước tiếp theo là học cách viết **spec chuyên nghiệp** — đủ chi tiết để cả team hiểu và AI generate đúng ngay lần đầu.

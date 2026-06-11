@@ -1,0 +1,122 @@
+---
+title: "3.1 · Kiến trúc: Spec hệ thống lớn"
+description: "Thiết kế hệ thống phân tầng spec cho dự án lớn, nhiều team. Xử lý context và dependency hiệu quả khi ứng dụng Spec-Driven Development ở quy mô lớn."
+pubDatetime: 2025-01-26
+tags: ["vibe-coding", "spec-driven", "ai", "expert", "giai-doan-3", "architecture"]
+order: 10
+---
+
+# 3.1 · Kiến trúc: Spec hệ thống lớn
+
+> **Mục tiêu:** Thiết kế được hệ thống phân tầng spec cho dự án lớn, nhiều team, đảm bảo tính nhất quán và dễ bảo trì khi dự án phình to.
+
+---
+
+## Vấn đề của dự án lớn
+
+Ở Giai đoạn 2, bạn đã học cách dùng Spec-Driven Development cho một tính năng đơn lẻ (như Auth flow, Payment). Nhưng khi dự án lớn lên (ví dụ: một hệ thống E-commerce với hàng chục microservices), một file Spec duy nhất sẽ gặp các vấn đề sau:
+
+1. **Context Window Overflow:** Không một mô hình AI nào có thể đọc hiểu và nhớ hết mọi chi tiết của một hệ thống khổng lồ cùng lúc. Nếu cố nhồi nhét, AI sẽ bị "ảo giác" (hallucinate) hoặc quên logic quan trọng.
+2. **Conflict khi làm việc nhóm:** Nhiều team cùng sửa chung một file Spec sẽ dẫn đến merge conflict liên tục.
+3. **Mất kiểm soát dependency:** Sửa logic ở tính năng Giỏ hàng có thể làm vỡ tính năng Thanh toán mà không ai hay biết.
+
+Giải pháp là **Phân tầng Spec**.
+
+---
+
+## Phân tầng Spec (Spec Hierarchy)
+
+Giống như cách chúng ta chia nhỏ code thành các module/services, Spec cũng cần được chia nhỏ và tổ chức theo cấu trúc hình cây.
+
+```text
+/docs/specs
+├── System_Spec.md           (Bức tranh tổng thể: Architecture, Tech stack chung)
+├── Integration_Spec.md      (Giao tiếp giữa các phần: API contracts, Event bus)
+├── /Service_A_Auth
+│   ├── Service_Spec.md      (Mục tiêu và scope của Auth Service)
+│   ├── Feature_Login.md     (Spec chi tiết tính năng Login)
+│   └── Feature_Register.md  (Spec chi tiết tính năng Register)
+└── /Service_B_Order
+    ├── Service_Spec.md
+    ├── Feature_Cart.md
+    └── Feature_Checkout.md
+```
+
+### 1. System Spec (Mức hệ thống)
+- **Ai viết:** Tech Lead / System Architect
+- **Nội dung:** Tầm nhìn hệ thống, kiến trúc tổng thể (Microservices, Monolith?), core tech stack (Node.js, PostgreSQL, Redis), và nguyên tắc cốt lõi (Security policies, Naming conventions).
+- **Cách dùng AI:** Dùng Reasoning Model (như Claude) để review thiết kế kiến trúc, đánh giá trade-off. File này làm **Context nền tảng** cho mọi agent.
+
+### 2. Service Spec (Mức dịch vụ/Domain)
+- **Ai viết:** Domain Lead / Senior Developer
+- **Nội dung:** Trách nhiệm của service này là gì? Giới hạn ranh giới (Bounded Context). Database schema sơ bộ.
+- **Cách dùng AI:** Dùng AI để phác thảo ranh giới hệ thống, gợi ý các bảng CSDL cần thiết.
+
+### 3. Feature Spec (Mức tính năng)
+- **Ai viết:** Developer / Product Manager
+- **Nội dung:** Giống hệt bài [2.3 · Spec chuyên nghiệp](/docs/vibe-coding/m2-3-spec-chuyen-nghiep). User stories, acceptance criteria, technical details.
+- **Cách dùng AI:** AI (Coding Agent) đọc file này để sinh code trực tiếp.
+
+### 4. Integration Spec (Mức tích hợp)
+- **Ai viết:** Tech Lead của các team liên quan
+- **Nội dung:** API Contracts (OpenAPI/Swagger), Kafka topics, Event schemas.
+- **Cách dùng AI:** Rất quan trọng. AI cực kỳ giỏi trong việc đọc API Contract và sinh ra code tích hợp (Client SDK, DTOs).
+
+---
+
+## Quản lý Context và Dependency
+
+Khi đưa Spec cho AI (đặc biệt là Coding Agent), nguyên tắc là **Chỉ cung cấp đủ những gì nó cần biết**.
+
+**Ví dụ: Khi yêu cầu AI code `Feature_Checkout.md`:**
+✅ **Đưa cho AI:**
+- `Feature_Checkout.md` (Chi tiết việc cần làm)
+- `Integration_Spec.md` (Để biết cách gọi qua service Payment)
+- `System_Spec.md` (Chỉ trích xuất phần Coding Convention)
+
+❌ **Không đưa cho AI:**
+- `Feature_Login.md` (Không liên quan, gây nhiễu context)
+
+### Kỹ thuật Reference Spec
+Trong các file Spec chi tiết, hãy dùng đường dẫn (link) hoặc hashtag để trỏ tới các file khác. Các Coding Agent hiện đại (như Cursor, Trae) hỗ trợ tự động đọc file được tag.
+
+> **Trích Feature_Checkout.md:**
+> "Quy trình thanh toán phải tuân thủ chuẩn bảo mật tại `@System_Spec.md`. Khi hoàn tất, bắn sự kiện `OrderCreated` theo định dạng định nghĩa tại `@Integration_Spec.md`."
+
+---
+
+## Xử lý khi Spec thay đổi (Cascade Update)
+
+Khi yêu cầu dự án thay đổi, Spec thay đổi trước, Code thay đổi sau. Ở hệ thống lớn, thay đổi một chỗ có thể lan rộng (Cascade).
+
+**Ví dụ:** Đổi tên trường `user_id` thành `account_id` trong Database.
+
+**Quy trình chuẩn với AI:**
+1. Cập nhật `Service_Spec.md` hoặc `Integration_Spec.md`.
+2. Mở Reasoning Model (Claude/ChatGPT), ném file Spec cũ và mới vào, yêu cầu:
+   > "Tôi vừa đổi tên trường `user_id` thành `account_id`. Dựa vào cấu trúc thư mục này, hãy liệt kê **tất cả các file Spec tính năng** cần phải cập nhật theo."
+3. AI sẽ trả về danh sách: `Feature_Login.md`, `Feature_Checkout.md`...
+4. Dùng Coding Agent để mở từng file Spec đó ra và update.
+5. Sau khi Spec đã nhất quán, dùng Coding Agent quét lại Code base:
+   > "Dựa trên spec `Feature_Checkout.md` mới nhất, hãy tìm và sửa toàn bộ code liên quan đến biến `user_id`."
+
+---
+
+## Spec Versioning (Quản lý phiên bản Spec)
+
+Spec là "Source of Truth" (Nguồn chân lý). Giống như Code, Spec phải được quản lý phiên bản bằng **Git**.
+
+- **Không dùng Google Docs/Notion** làm nơi lưu trữ Spec cuối cùng cho team dev. Hãy dùng file `.md` nằm ngay trong repository của dự án (ví dụ thư mục `/docs` hoặc `.kiro/specs`).
+- Khi tạo Pull Request (PR) cho một tính năng mới, PR đó phải bao gồm cả **thay đổi trong file Spec** và **thay đổi trong Code**.
+- Lợi ích: Bất cứ ai (và bất cứ AI nào) khi xem lại lịch sử Git ở một commit trong quá khứ, đều thấy chính xác Spec tại thời điểm đó tương ứng với Code tại thời điểm đó.
+
+---
+
+## Tóm tắt
+
+1. **Chia để trị:** Hệ thống lớn cần System Spec, Service Spec, Feature Spec và Integration Spec.
+2. **Quản lý Context:** Đừng nhồi nhét mọi thứ vào AI. Chỉ đưa những Spec liên quan trực tiếp đến task.
+3. **Cascade Update:** Dùng chính AI để phân tích sự ảnh hưởng khi có một thay đổi lớn trong Spec.
+4. **Git for Spec:** Lưu trữ Spec như Code, quản lý bằng Pull Request.
+
+Ở bài tiếp theo, chúng ta sẽ xem cách lấy bộ Spec phân tầng này giao cho một đội ngũ **Nhiều AI Agents** chạy song song để tăng tốc phát triển dự án.

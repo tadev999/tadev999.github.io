@@ -1,0 +1,253 @@
+---
+title: "1.2 · Viết Spec đầu tiên"
+description: "Học cách viết spec đủ rõ để AI hiểu và tạo ra đúng thứ bạn muốn — ngay từ lần đầu."
+pubDatetime: 2025-01-21
+tags: ["vibe-coding", "spec-driven", "ai", "non-tech", "giai-doan-1"]
+order: 5
+---
+
+
+# 1.2 · Viết Spec đầu tiên
+
+> **Mục tiêu:** Biết cách viết spec đủ để AI hiểu và tạo ra đúng thứ bạn muốn.
+
+---
+
+## Spec là gì?
+
+Ở 1.1 bạn đã học cách *mô tả ý tưởng*. Spec là bước tiếp theo — **cấu trúc hoá** mô tả đó thành một tài liệu mà AI (và cả người) đều hiểu ngay, không cần hỏi lại.
+
+Hãy nghĩ về spec như một bản tóm tắt dự án gửi cho một developer mới vào team. Nếu họ đọc xong và biết chính xác cần làm gì — spec của bạn đã tốt.
+
+---
+
+## Cấu trúc Spec đơn giản
+
+Với Giai đoạn 1, bạn chỉ cần 4 phần:
+
+<div class="spec-template">
+
+```
+1. Mục tiêu     — Tôi muốn làm gì?
+2. Người dùng   — Ai sẽ dùng?
+3. Tính năng    — Cần làm được gì?
+4. Ràng buộc    — Không được làm gì / giới hạn là gì?
+```
+
+</div>
+
+### 1 · Mục tiêu
+
+Một câu mô tả sản phẩm và lý do tồn tại của nó.
+
+> ✅ "Tạo một landing page giới thiệu dịch vụ tư vấn tài chính cá nhân, giúp khách hàng tiềm năng hiểu dịch vụ và để lại thông tin liên hệ."
+
+> ❌ "Làm một trang web đẹp." ← Không có mục tiêu rõ ràng.
+
+### 2 · Người dùng
+
+Ai sẽ dùng sản phẩm này? Càng cụ thể càng tốt.
+
+> ✅ "Người dùng là khách hàng tiềm năng 30–45 tuổi, không rành kỹ thuật, truy cập từ điện thoại."
+
+> ❌ "Mọi người." ← AI không biết nên ưu tiên gì.
+
+### 3 · Tính năng
+
+Liệt kê những gì sản phẩm cần làm được. Dùng danh sách, mỗi dòng một tính năng.
+
+> ✅
+> - Hiển thị 3 gói dịch vụ với giá và mô tả ngắn
+> - Form liên hệ: tên, email, số điện thoại
+> - Nút "Đặt lịch tư vấn miễn phí" nổi bật
+> - Responsive trên mobile
+
+### 4 · Ràng buộc
+
+Những gì **không** nên có, hoặc giới hạn kỹ thuật/thiết kế.
+
+> ✅
+> - Không cần backend — form chỉ cần hiển thị thông báo "Đã nhận"
+> - Không dùng màu đỏ — brand màu xanh navy
+> - Không có animation phức tạp — tải nhanh là ưu tiên
+
+---
+
+## Spec tốt vs Spec xấu
+
+<div class="compare-grid">
+
+<div class="compare-card compare-old">
+
+### ❌ Spec xấu
+
+```
+Làm cho tôi một app theo dõi
+công việc. Cần đẹp và dễ dùng.
+```
+
+**Vấn đề:**
+- "Đẹp" là chủ quan
+- Không biết ai dùng
+- Không biết tính năng cụ thể
+- AI sẽ đoán mò → kết quả không đúng ý
+
+</div>
+
+<div class="compare-card compare-new">
+
+### ✅ Spec tốt
+
+```
+Mục tiêu: Bảng theo dõi công việc
+hàng ngày cho freelancer.
+
+Người dùng: Freelancer làm việc một
+mình, dùng trên máy tính.
+
+Tính năng:
+- Thêm task với tên và deadline
+- Đánh dấu task hoàn thành
+- Lọc theo trạng thái (todo/done)
+
+Ràng buộc:
+- Không cần đăng nhập
+- Lưu dữ liệu trong localStorage
+- Giao diện tối màu (dark mode)
+```
+
+</div>
+
+</div>
+
+---
+
+## Dùng AI (như Claude, ChatGPT) để viết spec cùng
+
+Bạn không cần tự viết spec từ đầu. Các mô hình AI như Claude, ChatGPT có thể giúp bạn **cấu trúc hoá ý tưởng** thành spec hoàn chỉnh.
+
+<div class="chat-demo">
+
+<div class="chat-bubble user">
+  Tôi muốn làm một form thu thập email cho newsletter của tôi. Giúp tôi viết spec cho nó.
+</div>
+
+<div class="chat-bubble ai">
+  Được, tôi sẽ hỏi thêm một vài câu để viết spec chính xác hơn:
+  <br/><br/>
+  1. Người đăng ký là ai? (khách hàng, độc giả blog, cộng đồng...)
+  2. Bạn cần thu thập thông tin gì ngoài email?
+  3. Sau khi đăng ký, người dùng thấy gì?
+  4. Có yêu cầu gì về màu sắc / style không?
+  <span class="result-tag">→ AI hỏi để làm rõ trước khi viết</span>
+</div>
+
+<div class="chat-bubble user">
+  Độc giả blog tech. Chỉ cần email thôi. Sau khi đăng ký hiện "Cảm ơn, sẽ có email xác nhận". Màu xanh lá, tối giản.
+</div>
+
+<div class="chat-bubble ai">
+  **Spec: Newsletter Signup Form**
+
+  **Mục tiêu:** Form đăng ký nhận newsletter cho blog tech, thu thập email độc giả.
+
+  **Người dùng:** Độc giả blog tech, truy cập từ nhiều thiết bị.
+
+  **Tính năng:**
+  - Trường nhập email với validation
+  - Nút "Đăng ký" màu xanh lá
+  - Thông báo thành công: "Cảm ơn, sẽ có email xác nhận"
+  - Responsive
+
+  **Ràng buộc:**
+  - Chỉ thu thập email, không cần tên
+  - Không cần backend thật — mock response
+  - Thiết kế tối giản, không rườm rà
+  <span class="result-tag">✓ Spec hoàn chỉnh — sẵn sàng để generate</span>
+</div>
+
+</div>
+
+**Workflow:** Chia sẻ ý tưởng thô → AI hỏi làm rõ → AI viết spec → Bạn review và điều chỉnh → Dùng spec để generate.
+
+---
+
+## Luyện tập: 3 dạng sản phẩm phổ biến
+
+Dưới đây là template spec cho 3 dạng sản phẩm thường gặp ở Giai đoạn 1. Chọn 1 cái phù hợp với bạn và điền vào.
+
+### Template A · Landing Page cá nhân
+
+```
+Mục tiêu: Trang giới thiệu bản thân / dịch vụ của [tên bạn].
+
+Người dùng: [Khách hàng tiềm năng / nhà tuyển dụng / đối tác]
+truy cập từ [điện thoại / máy tính].
+
+Tính năng:
+- [ ] Phần hero: ảnh + tagline + CTA
+- [ ] Phần giới thiệu: [2–3 câu về bạn]
+- [ ] Phần dịch vụ / kỹ năng
+- [ ] Phần liên hệ: [email / form / link mạng xã hội]
+
+Ràng buộc:
+- Màu chủ đạo: [màu bạn muốn]
+- Không cần: [những gì bạn không muốn]
+```
+
+### Template B · Form đăng ký / thu thập data
+
+```
+Mục tiêu: Form [mục đích] để thu thập [loại thông tin].
+
+Người dùng: [Ai sẽ điền form này] trên [thiết bị].
+
+Tính năng:
+- [ ] Trường: [tên trường 1] — [bắt buộc/không]
+- [ ] Trường: [tên trường 2] — [bắt buộc/không]
+- [ ] Nút submit: "[text nút]"
+- [ ] Thông báo sau submit: "[nội dung thông báo]"
+
+Ràng buộc:
+- Validation: [email phải đúng định dạng / số điện thoại 10 số / ...]
+- Không cần lưu data thật — chỉ hiển thị thông báo
+```
+
+### Template C · Bảng theo dõi công việc
+
+```
+Mục tiêu: Bảng theo dõi [loại công việc] cho [ai dùng].
+
+Người dùng: [Mô tả người dùng], dùng trên [thiết bị].
+
+Tính năng:
+- [ ] Thêm item mới: [các trường cần nhập]
+- [ ] Đánh dấu hoàn thành
+- [ ] [Tính năng lọc / sắp xếp nếu cần]
+- [ ] [Tính năng xóa nếu cần]
+
+Ràng buộc:
+- Lưu dữ liệu: [localStorage / không cần lưu]
+- Giao diện: [màu sắc / style]
+- Không cần: [đăng nhập / backend / ...]
+```
+
+---
+
+## Áp dụng vào thực tế
+
+Khi bạn đã nắm được cấu trúc spec cơ bản, hãy thử viết spec cho một sản phẩm thực tế. Bạn có thể chọn một trong các template trên hoặc tự chọn sản phẩm khác.
+
+**Đặc điểm của spec hiệu quả:**
+- Mục tiêu rõ ràng trong 1–2 câu, có lý do tồn tại
+- Người dùng được mô tả cụ thể, biết họ dùng thiết bị gì
+- Tính năng được liệt kê chi tiết, mỗi dòng một tính năng
+- Ràng buộc rõ ràng về những gì không nên có hoặc giới hạn
+
+**Cách kiểm tra spec:** Sau khi viết xong, paste spec vào công cụ AI (như Claude, Kiro, Trae) và yêu cầu generate. Nếu kết quả không đúng ý, đó là dấu hiệu spec cần làm rõ hơn ở một số điểm.
+
+---
+
+## Tiếp theo
+
+Bạn đã có spec. Bước tiếp theo là **thực sự build** — dùng spec đó để tạo ra sản phẩm chạy được với các công cụ AI (Claude, Kiro, Antigravity...).

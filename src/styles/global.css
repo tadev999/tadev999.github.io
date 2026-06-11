@@ -1,0 +1,138 @@
+@import "tailwindcss";
+@import "./typography.css";
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+:root,
+html[data-theme="light"] {
+  --background: #fdfdfd;
+  --foreground: #282728;
+  --accent: #006cac;
+  --muted: #e6e6e6;
+  --border: #ece9e9;
+}
+
+html[data-theme="dark"] {
+  --background: #212737;
+  --foreground: #eaedf3;
+  --accent: #3da9fc;
+  --muted: #343f60;
+  --border: #2d374e;
+}
+
+@theme inline {
+  --font-app: var(--font-space-grotesk);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-accent/75;
+    scrollbar-width: auto;
+    scrollbar-color: var(--color-muted) transparent;
+  }
+  html {
+    @apply overflow-y-scroll scroll-smooth;
+  }
+  /* Docs layout: lock html/body so only the content pane scrolls */
+  html.docs-layout {
+    overflow: hidden;
+    height: 100%;
+  }
+  html.docs-layout body {
+    overflow: hidden;
+    height: 100%;
+    min-height: unset;
+  }
+  body {
+    @apply flex min-h-svh flex-col bg-background font-app text-foreground selection:bg-accent/75 selection:text-background;
+  }
+  a,
+  button {
+    @apply outline-offset-1 outline-accent focus-visible:no-underline focus-visible:outline-2 focus-visible:outline-dashed;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@utility max-w-app {
+  max-width: 768px;
+}
+
+@utility app-layout {
+  @apply mx-auto w-full px-4;
+  max-width: 768px;
+}
+
+.active-nav {
+  @apply underline decoration-wavy decoration-2 underline-offset-8;
+}
+
+/* Source: https://piccalil.li/blog/a-more-modern-css-reset/ */
+/* Anything that has been anchored to should have extra scroll margin */
+:target {
+  scroll-margin-block: 1rem;
+}
+
+/* Fix scroll offset for docs layout to account for fixed header */
+html.docs-layout :target {
+  scroll-margin-top: 6rem;
+}
+
+/* Ensure headings have proper scroll margin when navigating via TOC */
+html.docs-layout h1[id],
+html.docs-layout h2[id],
+html.docs-layout h3[id],
+html.docs-layout h4[id],
+html.docs-layout h5[id],
+html.docs-layout h6[id] {
+  scroll-margin-top: 6rem;
+}
+
+/* Fix code blocks text color and font family */
+pre, code, kbd, samp {
+  color: inherit !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+html[data-theme="dark"] pre,
+html[data-theme="dark"] code {
+  color: var(--color-foreground) !important;
+}
+
+/* Giảm font size 20% cho toàn bộ giao diện - Updated */
+html {
+  font-size: 13px !important;
+}
+
+@media (min-width: 640px) {
+  html {
+    font-size: 14px !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  html {
+    font-size: 15px !important;
+  }
+}
+
+/* Mermaid diagram container styling */
+.mermaid {
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin: 1.5rem auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-x: auto;
+}
+

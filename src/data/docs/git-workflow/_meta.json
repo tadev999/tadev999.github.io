@@ -1,0 +1,8 @@
+{
+  "title": "Git Workflow",
+  "order": {
+    "index.md": 1,
+    "conventional-commits.md": 2,
+    "branching.md": 3
+  }
+}

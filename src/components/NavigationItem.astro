@@ -1,0 +1,92 @@
+---
+/**
+ * NavigationItem Component
+ *
+ * Renders a single navigation item — either a file (link) or a folder
+ * (collapsible group with children). Supports recursive rendering for
+ * nested items and highlights the active page.
+ *
+ * Requirements: 3.1, 3.2
+ */
+import type { NavItem } from "@/types/navigation";
+
+interface Props {
+  item: NavItem;
+  currentPath: string;
+  depth?: number;
+}
+
+const { item, currentPath, depth = 0 } = Astro.props;
+
+const isActive = currentPath === item.path;
+const hasChildren = item.children && item.children.length > 0;
+
+/**
+ * Check if any descendant of this item is the current page.
+ * Used to auto-expand parent folders (Requirement 3.4).
+ */
+function isAncestorOfCurrent(navItem: NavItem, path: string): boolean {
+  if (navItem.path === path) return true;
+  if (!navItem.children) return false;
+  return navItem.children.some(child => isAncestorOfCurrent(child, path));
+}
+
+const shouldExpand = isActive || isAncestorOfCurrent(item, currentPath);
+---
+
+<li
+  class:list={[
+    "nav-item",
+    `depth-${depth}`,
+    { "is-active": isActive },
+  ]}
+  data-depth={depth}
+>
+  {
+    hasChildren ? (
+      <details open={shouldExpand} class="nav-folder">
+        <summary
+          class:list={[
+            "flex cursor-pointer select-none items-center gap-1 rounded-md px-2 py-1.5",
+            "text-sm font-medium text-foreground/80 hover:bg-accent/10 hover:text-accent",
+            "list-none [&::-webkit-details-marker]:hidden",
+            { "text-accent": shouldExpand },
+          ]}
+        >
+          {item.icon && <span class="nav-icon" aria-hidden="true">{item.icon}</span>}
+          <span class="nav-folder-arrow mr-1 inline-block transition-transform duration-200 [[open]_&]:rotate-90">
+            ▶
+          </span>
+          <span class="nav-title">{item.title}</span>
+        </summary>
+        <ul
+          class:list={[
+            "nav-children mt-0.5 space-y-0.5",
+            depth === 0 ? "pl-3" : "pl-3",
+            "border-l border-border/50",
+          ]}
+        >
+          {item.children!.map(child => (
+            <Astro.self item={child} currentPath={currentPath} depth={depth + 1} />
+          ))}
+        </ul>
+      </details>
+    ) : (
+      <a
+        href={item.path}
+        class:list={[
+          "nav-link flex items-center gap-1.5 rounded-md px-2 py-1.5",
+          "text-sm text-foreground/70 hover:bg-accent/10 hover:text-accent",
+          "transition-colors duration-150",
+          {
+            "bg-accent/15 font-medium text-accent": isActive,
+          },
+        ]}
+        aria-current={isActive ? "page" : undefined}
+      >
+        {item.icon && <span class="nav-icon" aria-hidden="true">{item.icon}</span>}
+        <span class="nav-title">{item.title}</span>
+      </a>
+    )
+  }
+</li>

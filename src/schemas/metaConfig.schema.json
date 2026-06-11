@@ -1,0 +1,46 @@
+{
+  "title": "Meta Configuration Schema",
+  "description": "JSON schema for _meta.json configuration files in Nextra-style content management",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Display title for this directory"
+    },
+    "order": {
+      "type": "object",
+      "description": "Custom ordering for items (filename -> order number)",
+      "patternProperties": {
+        ".*": {
+          "type": "number"
+        }
+      },
+      "additionalProperties": false
+    },
+    "hidden": {
+      "type": "array",
+      "description": "List of files/folders to hide from navigation",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "translations": {
+      "type": "object",
+      "description": "Translations for item titles (filename -> locale -> translated title)",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "patternProperties": {
+            "^[a-z]{2}(-[A-Z]{2})?$": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}

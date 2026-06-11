@@ -1,0 +1,39 @@
+---
+/**
+ * Sidebar — renders navigation items only.
+ * All toggle/overlay logic is handled by the parent layout (DocsLayout).
+ *
+ * Requirements: 3.1, 3.2, 3.4
+ */
+import type { NavigationTree, NavItem } from "@/types/navigation";
+import NavigationItem from "./NavigationItem.astro";
+
+interface Props {
+  navigationTree: NavigationTree;
+  currentPath: string;
+  locale?: string;
+}
+
+const { navigationTree, currentPath, locale } = Astro.props;
+
+let navItems: NavItem[] = navigationTree.root;
+if (locale) {
+  navItems = navigationTree.root.filter(item =>
+    item.path.split("/").filter(Boolean).includes(locale)
+  );
+}
+---
+
+<nav class="px-3 py-4" aria-label="Docs navigation">
+  {
+    navItems.length === 0 ? (
+      <p class="px-2 text-sm text-foreground/50 italic">No content found.</p>
+    ) : (
+      <ul class="space-y-0.5" role="list">
+        {navItems.map(item => (
+          <NavigationItem item={item} currentPath={currentPath} depth={0} />
+        ))}
+      </ul>
+    )
+  }
+</nav>

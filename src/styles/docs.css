@@ -1,0 +1,260 @@
+/**
+ * Docs-specific styles
+ * Custom components for documentation pages
+ */
+
+/* Spec Template */
+.spec-template {
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1rem 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.spec-template pre {
+  margin: 0;
+  color: inherit !important;
+}
+
+.spec-template code {
+  color: inherit !important;
+}
+
+/* Compare Grid (Good vs Bad examples) */
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 640px) {
+  .compare-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.compare-card {
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  background: var(--color-muted);
+}
+
+.compare-old {
+  border-left: 3px solid #E24B4A;
+}
+
+.compare-new {
+  border-left: 3px solid var(--color-accent);
+}
+
+.compare-card h3 {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  color: var(--color-foreground);
+}
+
+.compare-card pre {
+  font-size: 0.82rem;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  color: inherit !important;
+}
+
+.compare-card code {
+  color: inherit !important;
+}
+
+/* Chat Demo */
+.chat-demo {
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-bubble {
+  padding: 10px 14px;
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 88%;
+  color: var(--color-foreground);
+}
+
+.chat-bubble.user {
+  align-self: flex-end;
+  background: var(--color-accent);
+  color: var(--color-background);
+  opacity: 0.9;
+}
+
+.chat-bubble.ai {
+  align-self: flex-start;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+}
+
+.result-tag {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--color-accent);
+  font-weight: 500;
+  opacity: 0.85;
+}
+
+/* Tools Grid */
+.tools-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+@media (max-width: 640px) {
+  .tools-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.tool-card {
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  background: var(--color-muted);
+}
+
+.tool-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: var(--color-foreground);
+}
+
+.tool-card p,
+.tool-card strong {
+  color: var(--color-foreground);
+}
+
+.tool-card a {
+  color: var(--color-accent);
+}
+
+/* Process Flow */
+.process-flow {
+  margin: 2rem 0;
+}
+
+.process-flow h3 {
+  color: var(--color-accent);
+  margin-top: 2rem;
+}
+
+/* Demo Section */
+.demo-section {
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.demo-section h3 {
+  margin-top: 1.5rem;
+  font-size: 1rem;
+  color: var(--color-foreground);
+}
+
+.demo-section h3:first-child {
+  margin-top: 0;
+}
+
+.demo-section p,
+.demo-section li,
+.demo-section blockquote {
+  color: var(--color-foreground);
+}
+
+.demo-section pre,
+.demo-section code {
+  color: inherit !important;
+}
+
+/* Iterate Flow */
+.iterate-flow {
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+  text-align: center;
+}
+
+.iterate-flow pre {
+  margin: 0;
+  font-size: 0.95rem;
+  color: inherit !important;
+}
+
+.iterate-flow code {
+  color: inherit !important;
+}
+
+/* Decision Tree */
+.decision-tree {
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.decision-tree h3 {
+  color: var(--color-accent);
+  margin-top: 1.5rem;
+}
+
+.decision-tree h3:first-child {
+  margin-top: 0;
+}
+
+.decision-tree p,
+.decision-tree li,
+.decision-tree blockquote {
+  color: var(--color-foreground);
+}
+
+/* Case Study */
+.case-study {
+  background: var(--color-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  margin: 1.5rem 0;
+}
+
+.case-study h4 {
+  color: var(--color-accent);
+  margin-top: 1.5rem;
+}
+
+.case-study h4:first-child {
+  margin-top: 0;
+}
+
+.case-study p,
+.case-study li,
+.case-study blockquote {
+  color: var(--color-foreground);
+}
+
+.case-study pre,
+.case-study code {
+  color: inherit !important;
+}
+

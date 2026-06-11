@@ -1,0 +1,338 @@
+---
+title: "2.1 · Spec-Driven Development"
+description: "Hiểu và áp dụng quy trình Spec-Driven Development vào công việc hàng ngày — từ requirement đến production code."
+pubDatetime: 2025-01-24
+tags: ["vibe-coding", "spec-driven", "ai", "developer", "giai-doan-2"]
+order: 8
+---
+
+# 2.1 · Spec-Driven Development
+
+> **Mục tiêu:** Hiểu và áp dụng được quy trình Spec-Driven Development vào công việc hàng ngày.
+
+---
+
+## Quy trình chuẩn
+
+<div class="workflow-diagram">
+
+```
+Requirement → Spec → Task list → Code generation → Review → Ship
+```
+
+</div>
+
+Mỗi bước có mục đích rõ ràng và output cụ thể. Không skip bước nào.
+
+---
+
+## Tại sao Spec trước Code?
+
+### 1 · AI generate code tốt hơn ~40%
+
+<div class="stat-card">
+
+**Nghiên cứu nội bộ:**
+- Code **không có spec**: 60% cần sửa lớn sau review
+- Code **có spec rõ ràng**: chỉ 20% cần sửa
+
+**Lý do:** AI hiểu rõ context, không phải đoán mò.
+
+</div>
+
+---
+
+### 2 · Giảm vòng lặp sửa lỗi
+
+**Kịch bản thường gặp:**
+
+<div class="compare-grid">
+
+<div class="compare-card compare-old">
+
+### ❌ Không có Spec
+
+1. Dev code theo hiểu của mình
+2. PM review: "Không phải thế này"
+3. Dev sửa lại
+4. PM: "Vẫn thiếu case X"
+5. Dev sửa tiếp...
+
+**Kết quả:** 5–7 vòng iterate, mất 2 tuần
+
+</div>
+
+<div class="compare-card compare-new">
+
+### ✅ Có Spec
+
+1. PM + Dev viết spec cùng nhau
+2. Clarify hết mọi case trong spec
+3. Dev code theo spec
+4. PM review: "Đúng rồi"
+
+**Kết quả:** 1–2 vòng iterate, xong trong 3 ngày
+
+</div>
+
+</div>
+
+---
+
+### 3 · Spec là tài liệu sống
+
+**Lợi ích:**
+- Onboard member mới nhanh hơn
+- Dễ maintain sau 6 tháng
+- Dễ handover khi đổi người
+- Dễ viết test case
+
+---
+
+## So sánh: Code không có Spec vs có Spec
+
+### Case Study: Feature "User Profile Edit"
+
+<div class="case-study">
+
+#### Scenario A: Không có Spec
+
+**Requirement mơ hồ:**
+> "Làm trang edit profile cho user."
+
+**Quá trình:**
+1. Dev đoán: cần edit tên, email, avatar
+2. Code xong, PM review: "Thiếu phone number"
+3. Dev thêm phone, PM: "Email không được đổi"
+4. Dev sửa, PM: "Cần validation cho phone"
+5. Dev thêm validation, PM: "Avatar cần crop"
+6. ...
+
+**Kết quả:**
+- ⏱️ 10 ngày
+- 🔄 7 vòng iterate
+- 😫 Frustration cao
+
+---
+
+#### Scenario B: Có Spec
+
+**Spec rõ ràng:**
+
+```markdown
+## Feature: User Profile Edit
+
+### Goals
+- User có thể cập nhật thông tin cá nhân
+- Đảm bảo data integrity
+
+### User Story
+As a logged-in user, I want to edit my profile
+so that my information is up-to-date.
+
+### Editable Fields
+- Full name (required, 2-50 chars)
+- Phone number (optional, 10 digits)
+- Avatar (optional, max 2MB, crop to square)
+
+### Non-editable Fields
+- Email (display only, cannot change)
+- Username (display only)
+
+### Validation
+- Name: không chứa số hoặc ký tự đặc biệt
+- Phone: regex ^\d{10}$
+- Avatar: JPEG/PNG only
+
+### Acceptance Criteria
+- [ ] Form hiển thị đúng current data
+- [ ] Validation realtime khi user nhập
+- [ ] Save button disabled khi invalid
+- [ ] Success message sau khi save
+- [ ] Avatar preview trước khi upload
+```
+
+**Quá trình:**
+1. PM + Dev review spec, clarify hết
+2. Dev code theo spec
+3. PM review: pass ngay
+
+**Kết quả:**
+- ⏱️ 3 ngày
+- 🔄 1 vòng iterate
+- 😊 Mọi người happy
+
+</div>
+
+---
+
+## Chuyển Requirement mơ hồ → Spec rõ ràng
+
+### Bước 1: Hỏi đúng câu hỏi
+
+Khi nhận requirement mơ hồ, hỏi:
+
+**5W1H Framework:**
+- **What:** Feature này làm gì chính xác?
+- **Who:** Ai sẽ dùng? (role, permission)
+- **When:** Khi nào feature này được trigger?
+- **Where:** Ở đâu trong app? (page, section)
+- **Why:** Tại sao cần feature này? (business goal)
+- **How:** Hoạt động như thế nào? (flow, logic)
+
+---
+
+### Bước 2: Liệt kê Edge Cases
+
+**Ví dụ: Feature "Add to Cart"**
+
+**Happy path:** User click "Add", item vào cart.
+
+**Edge cases cần clarify:**
+- Item đã hết hàng?
+- User chưa login?
+- Cart đã đầy (max 50 items)?
+- Item đã có trong cart?
+- Quantity > stock available?
+
+**Mỗi case cần có behavior rõ ràng trong spec.**
+
+---
+
+### Bước 3: Viết Acceptance Criteria
+
+Acceptance Criteria = checklist để verify feature hoạt động đúng.
+
+**Format:**
+```
+- [ ] Given [context], when [action], then [result]
+```
+
+**Ví dụ:**
+```
+- [ ] Given user chưa login, when click "Add to Cart", then redirect to login page
+- [ ] Given item hết hàng, when view product, then button "Add to Cart" disabled
+- [ ] Given cart đã có item, when add same item, then increase quantity
+```
+
+---
+
+## Task Decomposition
+
+Feature lớn cần chia nhỏ thành tasks để AI xử lý hiệu quả.
+
+### Nguyên tắc chia task
+
+**1 task = 1 file hoặc 1 component**
+
+<div class="task-example">
+
+**Feature:** User Profile Edit
+
+**Tasks:**
+1. Create `ProfileEditForm` component
+2. Add form validation logic
+3. Create `updateProfile` API endpoint
+4. Add avatar upload + crop
+5. Write unit tests for validation
+6. Integration test for full flow
+
+**Mỗi task:** 30–60 phút, có input/output rõ ràng.
+
+</div>
+
+---
+
+## Workflow thực tế
+
+<div class="workflow-detail">
+
+### 1 · Requirement (từ PM/Stakeholder)
+
+**Input:** User story, business goal
+
+**Output:** Requirement doc (1–2 trang)
+
+**Thời gian:** 30–60 phút
+
+---
+
+### 2 · Spec (Dev viết)
+
+**Input:** Requirement doc
+
+**Output:** Technical spec với:
+- Goals & Non-goals
+- User stories
+- Technical design
+- Acceptance criteria
+
+**Thời gian:** 1–2 giờ
+
+---
+
+### 3 · Task list (Dev chia nhỏ)
+
+**Input:** Spec
+
+**Output:** Danh sách tasks với estimate
+
+**Thời gian:** 30 phút
+
+---
+
+### 4 · Code generation (AI + Dev)
+
+**Input:** Spec + Task list
+
+**Output:** Working code
+
+**Thời gian:** 2–5 giờ (tuỳ feature)
+
+---
+
+### 5 · Review (Dev + PM)
+
+**Input:** Code + Spec
+
+**Output:** Approved hoặc feedback
+
+**Thời gian:** 30–60 phút
+
+---
+
+### 6 · Ship
+
+**Input:** Approved code
+
+**Output:** Feature live trên production
+
+**Thời gian:** 15–30 phút (deploy + monitor)
+
+</div>
+
+---
+
+## Áp dụng vào công việc thực tế
+
+Spec-Driven Development phát huy hiệu quả nhất khi áp dụng vào các feature thực tế. Hãy thử với một feature bạn đang làm hoặc sắp làm.
+
+**Cấu trúc spec đầy đủ bao gồm:**
+- Goals & Non-goals rõ ràng
+- User stories mô tả nhu cầu người dùng
+- Technical design chi tiết (API, data model, components)
+- Edge cases để xử lý các tình huống đặc biệt
+- Acceptance criteria để verify feature hoạt động đúng
+- Task list với estimate để quản lý tiến độ
+
+**Đặc điểm của spec chất lượng:**
+- Đủ rõ để người khác đọc hiểu ngay
+- Cover ít nhất 3–5 edge cases quan trọng
+- Có 5–10 acceptance criteria cụ thể
+- Task list có 4–8 tasks, mỗi task 30–90 phút
+
+---
+
+## Tiếp theo
+
+Bạn đã hiểu quy trình Spec-Driven Development. Bước tiếp theo là học cách **dùng đúng công cụ đúng việc** — kết hợp Reasoning Model (Claude, ChatGPT) và Coding Agent (Cursor, Kiro, Antigravity) để tối đa hoá hiệu quả.

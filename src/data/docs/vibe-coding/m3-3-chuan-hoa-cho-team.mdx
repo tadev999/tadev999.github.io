@@ -1,0 +1,131 @@
+---
+title: "3.3 · Team Process: Chuẩn hoá cho team"
+description: "Xây dựng bộ quy tắc và tài liệu chuẩn giúp cả team (gồm nhiều người và AI) viết spec nhất quán và làm việc trơn tru với nhau."
+pubDatetime: 2025-01-28
+tags: ["vibe-coding", "spec-driven", "ai", "team-process", "expert", "giai-doan-3"]
+order: 12
+---
+
+# 3.3 · Team Process: Chuẩn hoá cho team
+
+> **Mục tiêu:** Xây dựng quy trình làm việc chung để mọi thành viên trong team (từ Junior đến Senior) đều viết Spec nhất quán và tận dụng AI một cách hiệu quả, an toàn.
+
+---
+
+## Khi "Vibe Coding" gặp quy mô đội nhóm
+
+Nếu bạn làm một mình, bạn có thể "Vibe" theo ý thích: viết spec lỏng lẻo một chút, tự sửa code thủ công nếu AI làm sai. Nhưng khi áp dụng cho một team 5-10 người, nếu không có tiêu chuẩn chung, bạn sẽ gặp thảm hoạ:
+- Mỗi người viết Spec theo một phong cách (AI đọc không hiểu hoặc sinh code lạc quẻ).
+- Junior Dev quá tin tưởng vào AI (Over-trust), commit code chứa lỗ hổng bảo mật.
+- Conflict liên tục vì các AI agents sinh code theo các convention khác nhau.
+
+Giải pháp là thiết lập **Bộ tài liệu chuẩn hoá AI (AI Governance)**.
+
+---
+
+## Bộ 4 tài liệu cần có cho một AI-first Team
+
+Bạn nên đặt các file này ở thư mục gốc của dự án (vd: `.github/` hoặc `/docs/ai-guidelines/`). Nhiều công cụ AI như Cursor hay Trae hiện nay hỗ trợ file `.cursorrules` hoặc `AGENTS.md` tự động đọc các luật này làm system prompt.
+
+### 1. `SPEC_TEMPLATE.md` (Khuôn mẫu viết Spec)
+
+**Mục đích:** Bắt buộc mọi người phải điền đủ thông tin trước khi nhờ AI code.
+**Cách dùng:** Developer nhân bản (duplicate) file này để viết tính năng mới.
+
+```markdown
+# 🚀 [Tên Feature] - Spec Document
+
+## 1. Mục tiêu (Overview)
+- Tính năng này giải quyết vấn đề gì?
+- Ai là người sử dụng?
+
+## 2. Giới hạn (Scope & Non-Goals)
+- KHÔNG làm những gì trong phạm vi task này?
+
+## 3. Kiến trúc & Dependency
+- Cần tuân thủ System Spec nào? (Link to System_Spec)
+- Những API/Services nào sẽ bị ảnh hưởng?
+
+## 4. Chi tiết kỹ thuật (Technical Details)
+- Database schema thay đổi: [Mô tả]
+- Component tái sử dụng: [Tên Components đã có để AI không viết lại]
+
+## 5. Acceptance Criteria (Tiêu chí nghiệm thu)
+- [ ] AC1: Khi user bấm [A], hệ thống phải làm [B]
+- [ ] AC2: Nếu [Lỗi X] xảy ra, hiển thị [Thông báo Y]
+```
+
+### 2. `AI_GUIDELINES.md` hoặc `.rules` (Luật cho AI)
+
+**Mục đích:** Định hướng phong cách code cho AI (Coding Convention).
+**Cách dùng:** Feed file này vào System Prompt của Coding Agent.
+
+```markdown
+# AI Coding Guidelines cho Team E-commerce
+
+Khi sinh code cho dự án này, AI MẶC ĐỊNH phải tuân theo các luật sau:
+
+1. **Ngôn ngữ & Framework:**
+   - Chỉ sử dụng TypeScript. Không dùng Javascript thuần (`.js`).
+   - Sử dụng React Functional Components với Hooks. KHÔNG dùng Class Components.
+
+2. **Styling:**
+   - Chỉ sử dụng TailwindCSS. KHÔNG tạo file `.css` hay `.scss` mới.
+
+3. **Xử lý lỗi (Error Handling):**
+   - Mọi hàm gọi API phải bọc trong `try/catch`.
+   - Lỗi phải được log qua thư viện `Logger` cục bộ (vd: `import { logError } from '@/utils/logger'`), KHÔNG dùng `console.log`.
+
+4. **Trạng thái (State):**
+   - Ưu tiên Zustand cho Global State.
+```
+
+### 3. `REVIEW_CHECKLIST.md` (Tiêu chuẩn Review Code do AI viết)
+
+**Mục đích:** Ngăn chặn hội chứng "Nhắm mắt bấm Merge" (Over-trusting AI).
+**Cách dùng:** Gắn vào template Pull Request của Github/Gitlab.
+
+```markdown
+## 🤖 AI Code Review Checklist
+
+Dành cho người tạo PR (Self-Review):
+- [ ] Code sinh ra có hoàn toàn tuân thủ `SPEC_TEMPLATE` không?
+- [ ] Đã đọc HIỂU TỪNG DÒNG code AI sinh ra chưa? (Không hiểu -> Không commit).
+- [ ] AI có tự ý import các thư viện bên ngoài (npm packages) chưa được phê duyệt không?
+- [ ] AI có lén xoá/thay đổi logic của tính năng cũ khi sửa tính năng mới không?
+
+Dành cho Reviewer (Con người / AI Architect):
+- [ ] Kiến trúc có khớp với System Spec tổng thể không?
+- [ ] Có rủi ro SQL Injection, XSS, hoặc rò rỉ dữ liệu (Hardcode credentials) do AI sinh ra không?
+```
+
+### 4. `ONBOARDING.md` (Đào tạo thành viên mới)
+
+**Mục đích:** Hướng dẫn Dev mới cách làm quen với quy trình Spec-Driven.
+**Nội dung cốt lõi:**
+- "Ở team này, kỹ năng quan trọng nhất không phải là thuộc lòng syntax, mà là khả năng viết Spec rõ ràng."
+- Hướng dẫn họ cách dùng các công cụ AI của team (vd: Cấp tài khoản Claude Team, hướng dẫn setup Cursor/Kiro).
+- Định nghĩa rõ quy trình: `Nghĩ (Idea) -> Viết Spec -> AI duyệt Spec -> AI Code -> Người duyệt Code`.
+
+---
+
+## Xử lý chênh lệch trình độ (Skill Gap) trong Team
+
+Khi chuyển đổi sang AI-first, team bạn sẽ gặp hiện tượng:
+- **Senior Dev:** Dùng AI rất giỏi vì họ biết cách mô tả logic sâu và biết AI sai ở đâu.
+- **Junior Dev:** Có thể bị AI dẫn dụ vào những kiến trúc phức tạp không cần thiết (Over-engineering).
+
+**Giải pháp của Tech Lead:**
+1. **Duyệt Spec trước khi duyệt Code:** Junior Dev phải đưa Spec (sau khi thảo luận cùng AI) cho Senior/Tech Lead duyệt. Chỉ khi Spec "đủ ngon" mới được phép cho AI sinh code. Điều này tiết kiệm hàng giờ debug những đoạn code được sinh ra từ một Spec sai.
+2. **Pair-Prompting:** Giống Pair-Programming, nhưng là 1 Senior ngồi cùng 1 Junior để viết prompt và xử lý lỗi do AI gây ra.
+
+---
+
+## Tóm tắt
+
+1. **Chuẩn hóa Đầu vào:** Dùng `SPEC_TEMPLATE.md` để đảm bảo AI luôn nhận đủ dữ kiện.
+2. **Chuẩn hóa Quá trình:** Dùng AI rules (`.cursorrules` / `AI_GUIDELINES.md`) để ép AI viết code theo chuẩn của team.
+3. **Chuẩn hóa Đầu ra:** Dùng `REVIEW_CHECKLIST.md` để rào lại những lỗi "ảo giác" của AI trước khi lên Production.
+4. **Thay đổi quy trình Review:** Shift-left (dịch chuyển sớm) việc Review — duyệt bản phác thảo (Spec) kỹ hơn là duyệt Code.
+
+Sau khi đã có quy trình chuẩn, ở bài cuối cùng, chúng ta sẽ xem cách **Đo lường và Tối ưu** để xem việc áp dụng AI thực sự mang lại bao nhiêu hiệu quả cho tổ chức.

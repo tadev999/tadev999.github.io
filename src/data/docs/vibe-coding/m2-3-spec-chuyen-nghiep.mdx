@@ -1,0 +1,365 @@
+---
+title: "2.3 · Spec chuyên nghiệp"
+description: "Viết spec chuẩn mực mà cả người và AI đều hiểu ngay — từ PRD đến Technical Spec."
+pubDatetime: 2025-01-26
+tags: ["vibe-coding", "spec-driven", "ai", "developer", "giai-doan-2"]
+order: 10
+---
+
+# 2.3 · Spec chuyên nghiệp
+
+> **Mục tiêu:** Viết được spec chuẩn mực mà cả người và AI đều hiểu ngay.
+
+---
+
+## Cấu trúc Spec đầy đủ
+
+<div class="spec-template">
+
+```
+## Overview
+Mô tả ngắn gọn feature này làm gì và tại sao cần
+
+## Goals
+- [ ] Goal 1: Measurable outcome
+- [ ] Goal 2: Measurable outcome
+
+## Non-goals
+- Những gì KHÔNG thuộc scope (quan trọng!)
+
+## User Stories
+- As a [role], I want to [action] so that [benefit]
+
+## Technical Spec
+### Architecture
+- Components / Services involved
+- Data flow
+
+### API Design
+- Endpoints, methods, request/response
+
+### Data Model
+- Database schema, relationships
+
+### Edge Cases
+- Liệt kê tất cả edge cases và behavior
+
+## Acceptance Criteria
+- [ ] Given [context], when [action], then [result]
+
+## Out of Scope (Optional)
+- Features sẽ làm sau, không làm trong phase này
+```
+
+</div>
+
+---
+
+## PRD vs Technical Spec
+
+### PRD (Product Requirements Document)
+
+**Ai viết:** PM / Product Owner
+
+**Mục đích:** Giải thích **tại sao** và **cái gì**
+
+**Nội dung:**
+- Business goal
+- User personas
+- User stories
+- Success metrics
+- Timeline
+
+**Ví dụ:**
+> "Chúng ta cần feature Search để user tìm sản phẩm nhanh hơn. Hiện tại 40% user bỏ cuộc vì không tìm thấy sản phẩm. Mục tiêu: giảm bounce rate xuống 20%."
+
+---
+
+### Technical Spec
+
+**Ai viết:** Developer / Tech Lead
+
+**Mục đích:** Giải thích **như thế nào**
+
+**Nội dung:**
+- Architecture design
+- API contracts
+- Data model
+- Algorithm / Logic
+- Performance requirements
+
+**Ví dụ:**
+> "Search sẽ dùng Elasticsearch. Index gồm: product_name, description, tags. API: GET /search?q=keyword&limit=20. Response time < 200ms."
+
+---
+
+**Khi nào dùng cái gì?**
+
+<div class="decision-table">
+
+| Tình huống | Dùng |
+|------------|------|
+| Brainstorm feature mới | PRD |
+| Clarify với PM/Stakeholder | PRD |
+| Implement feature | Technical Spec |
+| Onboard dev mới | Technical Spec |
+| Review architecture | Technical Spec |
+
+</div>
+
+---
+
+## Viết Acceptance Criteria rõ ràng
+
+Acceptance Criteria = checklist để AI (và QA) tự kiểm tra được.
+
+### Format chuẩn: Given-When-Then
+
+```
+Given [initial context]
+When [action occurs]
+Then [expected result]
+```
+
+### Ví dụ: Feature "Add to Cart"
+
+<div class="criteria-examples">
+
+#### ✅ Acceptance Criteria tốt
+
+```
+- [ ] Given user chưa login, when click "Add to Cart", then redirect to /login
+- [ ] Given item hết hàng, when view product page, then button "Add to Cart" disabled và hiển thị "Out of Stock"
+- [ ] Given cart đã có item X, when add item X again, then increase quantity thay vì tạo entry mới
+- [ ] Given quantity > available stock, when add to cart, then show error "Only [stock] items available"
+- [ ] Given add to cart thành công, when view cart icon, then badge hiển thị tổng số items
+```
+
+**Tại sao tốt:**
+- Cụ thể, không mơ hồ
+- Cover edge cases
+- AI có thể tự generate test cases từ đây
+
+---
+
+#### ❌ Acceptance Criteria xấu
+
+```
+- [ ] User có thể add item vào cart
+- [ ] Cart hoạt động đúng
+- [ ] Xử lý lỗi tốt
+```
+
+**Tại sao xấu:**
+- Quá chung chung
+- Không rõ "đúng" là như thế nào
+- AI không biết cần làm gì
+
+</div>
+
+---
+
+## Ví dụ Spec thực tế
+
+### Case 1: Authentication Flow
+
+<div class="spec-example">
+
+**Feature: User Authentication (Email/Password)**
+
+**Overview:**  
+Implement secure authentication system cho web app.
+User có thể register, login, logout bằng email/password.
+
+**Goals:**
+- User có thể tạo account và login
+- Session được quản lý an toàn với JWT
+- Password được hash và không lưu plaintext
+
+**Non-goals:**
+- OAuth (Google, Facebook) — sẽ làm phase 2
+- 2FA — sẽ làm phase 3
+- Password reset — sẽ làm phase 2
+
+**User Stories:**
+- As a new user, I want to register với email/password so that I can access the app
+- As a registered user, I want to login so that I can use my account
+- As a logged-in user, I want to logout so that my session ends
+
+**Technical Spec:**
+
+*Architecture:*
+- Frontend: React + Context API cho auth state
+- Backend: Node.js + Express
+- Database: PostgreSQL (users table)
+- Auth: JWT (access token + refresh token)
+
+*API Design:*
+
+POST /auth/register  
+Request: `{ "email": "user@example.com", "password": "SecurePass123!", "name": "John Doe" }`  
+Response (201): `{ "success": true, "data": { "user": {...}, "accessToken": "...", "refreshToken": "..." } }`
+
+POST /auth/login  
+Request: `{ "email": "user@example.com", "password": "SecurePass123!" }`  
+Response (200): Same as register
+
+POST /auth/logout  
+Headers: `Authorization: Bearer <accessToken>`  
+Response (200): `{ "success": true }`
+
+*Data Model:*
+
+```sql
+CREATE TABLE users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE refresh_tokens (
+  id SERIAL PRIMARY KEY,
+  user_id INT REFERENCES users(id),
+  token VARCHAR(500) UNIQUE NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
+  created_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+*Security:*
+- Password: bcrypt với salt rounds = 10
+- JWT secret: lưu trong env variable
+- Access token: expire sau 15 phút
+- Refresh token: expire sau 7 ngày
+- Rate limiting: max 5 login attempts / 15 phút / IP
+
+*Edge Cases:*
+- Email đã tồn tại → 409 Conflict
+- Password < 8 chars → 400 Bad Request
+- Invalid email format → 400 Bad Request
+- Wrong password → 401 Unauthorized
+- Expired access token → 401, client dùng refresh token
+- Expired refresh token → 401, client redirect to login
+
+**Acceptance Criteria:**
+- Given valid email/password, when register, then account created và return tokens
+- Given email đã tồn tại, when register, then return 409 error
+- Given password < 8 chars, when register, then return 400 error
+- Given valid credentials, when login, then return tokens
+- Given wrong password, when login, then return 401 error
+- Given valid access token, when call protected endpoint, then allow access
+- Given expired access token, when call protected endpoint, then return 401
+- Given valid refresh token, when refresh, then return new access token
+- Given logout, when use old access token, then return 401
+
+</div>
+
+---
+
+### Case 2: Payment Integration
+
+<div class="spec-example">
+
+**Feature: Stripe Payment Integration**
+
+**Overview:**  
+Tích hợp Stripe để user có thể thanh toán online.
+Support credit card và saved payment methods.
+
+**Goals:**
+- User có thể thanh toán bằng credit card
+- Payment được xử lý an toàn qua Stripe
+- Order status được update realtime
+
+**Non-goals:**
+- PayPal, Momo — phase 2
+- Subscription billing — phase 3
+- Refund flow — phase 2
+
+**User Stories:**
+- As a customer, I want to pay bằng credit card so that I can complete my order
+- As a customer, I want to save payment method so that checkout nhanh hơn lần sau
+
+**Technical Spec:**
+
+*Architecture:*
+- Frontend: Stripe Elements (React)
+- Backend: Stripe API (Node.js SDK)
+- Webhook: Stripe → Backend để update order status
+
+*API Design:*
+
+POST /payments/create-intent  
+Request: `{ "orderId": 123, "amount": 50000, "currency": "vnd" }`  
+Response: `{ "clientSecret": "pi_xxx_secret_yyy" }`
+
+POST /payments/confirm  
+Request: `{ "paymentIntentId": "pi_xxx" }`  
+Response: `{ "success": true, "orderId": 123, "status": "paid" }`
+
+POST /webhooks/stripe (Stripe calls this)  
+Verify signature, update order status.
+
+*Data Model:*
+
+```sql
+CREATE TABLE payments (
+  id SERIAL PRIMARY KEY,
+  order_id INT REFERENCES orders(id),
+  stripe_payment_intent_id VARCHAR(255) UNIQUE,
+  amount INT NOT NULL,
+  currency VARCHAR(3) DEFAULT 'vnd',
+  status VARCHAR(50), -- pending, succeeded, failed
+  created_at TIMESTAMP DEFAULT NOW(),
+  updated_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+*Edge Cases:*
+- Payment declined → show error, allow retry
+- Network timeout → show "Processing...", check status via webhook
+- Duplicate payment → idempotency key prevents double charge
+- Webhook arrives before confirm → handle out-of-order events
+
+**Acceptance Criteria:**
+- Given valid order, when create payment intent, then return clientSecret
+- Given valid card, when submit payment, then charge succeeds
+- Given invalid card, when submit payment, then show error message
+- Given payment succeeds, when webhook arrives, then order status = "paid"
+- Given payment fails, when webhook arrives, then order status = "failed"
+- Given duplicate payment attempt, when submit, then prevent double charge
+
+</div>
+
+---
+
+## Áp dụng vào dự án thực
+
+Spec chuyên nghiệp là nền tảng để cả team hiểu rõ và AI generate đúng ngay lần đầu. Hãy thử viết spec cho một feature thực tế từ dự án của bạn.
+
+**Các thành phần của spec chuyên nghiệp:**
+- Overview, Goals, Non-goals rõ ràng
+- User stories mô tả đầy đủ (3–5 stories)
+- Technical spec chi tiết: API, data model, architecture
+- Edge cases cover các tình huống thực tế (5–10 cases)
+- Acceptance criteria theo format Given-When-Then (8–15 criteria)
+
+**Đặc điểm của spec chất lượng cao:**
+- Đủ chi tiết để developer khác đọc hiểu ngay
+- API design có request/response examples cụ thể
+- Data model có SQL schema hoặc diagram
+- Edge cases cover các tình huống thực tế, không chỉ happy path
+- Acceptance criteria rõ ràng, có thể verify được
+
+**Sự khác biệt quan trọng:**
+- PRD (Product Requirements Doc) giải thích **tại sao** và **cái gì**
+- Technical Spec giải thích **như thế nào** implement
+
+---
+
+## Tiếp theo
+
+Bạn đã biết cách viết spec chuyên nghiệp. Bước cuối cùng của Giai đoạn 2 là **áp dụng toàn bộ quy trình** vào 1 dự án thực — từ requirement đến production-ready code.

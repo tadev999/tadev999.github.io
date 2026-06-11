@@ -1,0 +1,12 @@
+{
+  "title": "Multi-Agent với Antigravity",
+  "description": "Xây dựng hệ thống Multi-Agent cho Development với Antigravity",
+  "icon": "🤖",
+  "order": {
+    "index": 1,
+    "setup": 2,
+    "first-agent": 3,
+    "multi-agent-system": 4,
+    "best-practices": 5
+  }
+}

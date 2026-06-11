@@ -1,0 +1,317 @@
+---
+title: "1.4 · Sửa & cải thiện sản phẩm"
+description: "Thành thạo vòng lặp iterate — biến sản phẩm tốt thành sản phẩm xuất sắc."
+pubDatetime: 2025-01-23
+tags: ["vibe-coding", "spec-driven", "ai", "non-tech", "giai-doan-1"]
+order: 7
+---
+
+# 1.4 · Sửa & cải thiện sản phẩm
+
+> **Mục tiêu:** Thành thạo vòng lặp cải tiến sản phẩm cùng AI.
+
+---
+
+## Vòng lặp Iterate
+
+Sản phẩm tốt không được tạo ra trong 1 lần — nó được **iterate** qua nhiều vòng cải tiến.
+
+<div class="iterate-flow">
+
+```
+Chạy thử → Nhận xét cụ thể → Mô tả lại → AI sửa → Lặp lại
+```
+
+</div>
+
+**Nguyên tắc vàng:** Mỗi vòng iterate chỉ sửa 2–3 điều. Đừng cố sửa tất cả cùng lúc.
+
+---
+
+## "Prompt tốt" là gì?
+
+Prompt tốt giúp AI hiểu chính xác bạn muốn gì. Dưới đây là 3 yếu tố quan trọng:
+
+### 1 · Cụ thể
+
+<div class="compare-grid">
+
+<div class="compare-card compare-old">
+
+### ❌ Prompt mơ hồ
+
+"Nút này chưa đẹp."
+
+**Vấn đề:** AI không biết "đẹp" là như thế nào.
+
+</div>
+
+<div class="compare-card compare-new">
+
+### ✅ Prompt cụ thể
+
+"Nút 'Đăng ký' cần:
+- Kích thước: 48px cao
+- Màu: #1D9E75
+- Bo góc: 8px
+- Shadow: 0 2px 8px rgba(0,0,0,0.1)"
+
+**Kết quả:** AI sửa đúng ngay lần đầu.
+
+</div>
+
+</div>
+
+---
+
+### 2 · Có ví dụ trước/sau
+
+<div class="compare-grid">
+
+<div class="compare-card compare-old">
+
+### ❌ Không có ví dụ
+
+"Thay đổi cách hiển thị giá."
+
+</div>
+
+<div class="compare-card compare-new">
+
+### ✅ Có ví dụ
+
+"Thay đổi hiển thị giá:
+- **Trước:** 500000
+- **Sau:** 500.000 ₫"
+
+</div>
+
+</div>
+
+---
+
+### 3 · Có context
+
+<div class="compare-grid">
+
+<div class="compare-card compare-old">
+
+### ❌ Thiếu context
+
+"Thêm validation."
+
+**Vấn đề:** Validation cho trường nào? Kiểm tra gì?
+
+</div>
+
+<div class="compare-card compare-new">
+
+### ✅ Đủ context
+
+"Thêm validation cho trường email:
+- Phải có @ và domain
+- Hiển thị lỗi màu đỏ bên dưới
+- Disable nút submit khi email sai"
+
+</div>
+
+</div>
+
+---
+
+## Phân biệt lỗi do Spec vs lỗi do AI
+
+Khi sản phẩm không đúng ý, cần xác định nguyên nhân:
+
+### Lỗi do Spec
+
+**Dấu hiệu:**
+- AI làm đúng những gì bạn mô tả, nhưng kết quả không như mong đợi
+- Bạn nhận ra thiếu một tính năng quan trọng
+- Ràng buộc không rõ ràng
+
+**Giải pháp:** Viết lại spec, bổ sung phần thiếu.
+
+**Ví dụ:**
+> Spec: "Form liên hệ với email và tên"  
+> Kết quả: Form không có validation  
+> → Lỗi do spec thiếu yêu cầu validation
+
+---
+
+### Lỗi do AI
+
+**Dấu hiệu:**
+- AI không làm đúng những gì bạn mô tả rõ ràng
+- Code có bug logic
+- Styling sai màu/kích thước dù đã chỉ định
+
+**Giải pháp:** Viết prompt cụ thể hơn, hoặc thử lại.
+
+**Ví dụ:**
+> Spec: "Nút màu xanh #1D9E75"  
+> Kết quả: Nút màu xanh dương  
+> → Lỗi do AI, cần nhắc lại
+
+---
+
+## Khi nào viết lại Spec, khi nào chỉ sửa Prompt?
+
+<div class="decision-tree">
+
+### Viết lại Spec khi:
+
+- Thay đổi mục tiêu hoặc người dùng
+- Thêm/bớt tính năng lớn
+- Thay đổi cấu trúc sản phẩm
+- Sau 3+ vòng iterate mà vẫn không đúng ý
+
+**Ví dụ:**
+> Ban đầu: Landing page cho dịch vụ  
+> Sau iterate: Nhận ra cần thêm blog section  
+> → Viết lại spec với phần blog
+
+---
+
+### Chỉ sửa Prompt khi:
+
+- Điều chỉnh nhỏ về UI (màu sắc, kích thước, spacing)
+- Sửa lỗi validation
+- Thay đổi text/content
+- Cải thiện responsive
+
+**Ví dụ:**
+> "Đổi màu nút từ xanh sang cam"  
+> → Chỉ cần prompt, không cần sửa spec
+
+</div>
+
+---
+
+## Chiến lược Iterate hiệu quả
+
+### Vòng 1: Sửa lỗi nghiêm trọng
+
+Ưu tiên những gì **không hoạt động**:
+- Form không submit được
+- Link bị broken
+- Layout vỡ trên mobile
+
+---
+
+### Vòng 2: Cải thiện UX
+
+Sau khi mọi thứ hoạt động, cải thiện trải nghiệm:
+- Thêm validation rõ ràng
+- Loading state cho button
+- Error message thân thiện
+
+---
+
+### Vòng 3: Polish UI
+
+Cuối cùng, làm đẹp:
+- Điều chỉnh màu sắc, spacing
+- Thêm animation nhẹ
+- Tối ưu responsive
+
+---
+
+## Demo: Iterate một Landing Page
+
+<div class="demo-section">
+
+### Version 1: Sản phẩm ban đầu
+
+**Vấn đề phát hiện:**
+- ❌ Nút CTA không nổi bật
+- ❌ Form thiếu validation
+- ❌ Không có loading state
+- ✅ Layout responsive tốt
+
+---
+
+### Iterate Round 1: Sửa lỗi nghiêm trọng
+
+**Prompt:**
+```
+Cần sửa:
+1. Thêm validation cho form:
+   - Email phải đúng định dạng
+   - Số điện thoại 10 số
+   - Hiển thị lỗi màu đỏ bên dưới mỗi trường
+2. Disable nút submit khi form chưa hợp lệ
+```
+
+**Kết quả:** ✅ Form hoạt động đúng
+
+---
+
+### Iterate Round 2: Cải thiện UX
+
+**Prompt:**
+```
+Cải thiện UX:
+1. Nút submit hiển thị "Đang gửi..." khi click
+2. Sau submit thành công, hiển thị thông báo xanh "Đã nhận thông tin"
+3. Clear form sau 2 giây
+```
+
+**Kết quả:** ✅ Trải nghiệm mượt mà hơn
+
+---
+
+### Iterate Round 3: Polish UI
+
+**Prompt:**
+```
+Polish UI:
+1. Nút CTA: màu cam #F97316, shadow 0 4px 12px rgba(249,115,22,0.3)
+2. Thêm transition 0.2s cho hover effect
+3. Tăng line-height của đoạn text giới thiệu lên 1.7
+```
+
+**Kết quả:** ✅ Sản phẩm hoàn thiện, sẵn sàng deploy!
+
+</div>
+
+---
+
+## Thực hành iterate
+
+Việc iterate là kỹ năng quan trọng để biến sản phẩm tốt thành sản phẩm xuất sắc. Chiến lược hiệu quả là chia thành 3 vòng: sửa lỗi nghiêm trọng → cải thiện UX → polish UI.
+
+**Cách tiếp cận iterate hiệu quả:**
+- Liệt kê 5–7 điều cần cải thiện trong sản phẩm hiện tại
+- Ưu tiên sửa những gì không hoạt động trước
+- Viết prompt cụ thể, rõ ràng cho mỗi vòng iterate
+- Ghi chú lại những thay đổi sau mỗi vòng để học hỏi
+
+**Dấu hiệu iterate thành công:**
+- Sản phẩm cuối tốt hơn rõ rệt so với ban đầu
+- Mỗi vòng iterate giải quyết được vấn đề đã đặt ra
+- Bạn hiểu rõ hơn cách viết prompt hiệu quả
+- Biết phân biệt khi nào là lỗi do spec, khi nào là lỗi do AI
+
+---
+
+## Kết quả Giai đoạn 1
+
+🎉 **Chúc mừng!** Bạn đã hoàn thành Giai đoạn 1.
+
+**Bạn đã học được:**
+- ✅ Tư duy Vibe Coding: mô tả thay vì code
+- ✅ Viết spec cơ bản với 4 phần
+- ✅ Build sản phẩm thực tế với AI
+- ✅ Iterate hiệu quả để cải thiện sản phẩm
+
+**Bạn có thể:**
+- Tạo landing page, form, dashboard đơn giản
+- Viết spec đủ rõ để AI hiểu
+- Iterate sản phẩm qua nhiều vòng cải tiến
+
+---
+
+## Tiếp theo
+
+Bạn đã biết cách tạo sản phẩm đơn giản. Giai đoạn 2 sẽ dạy bạn cách **làm việc như một developer chuyên nghiệp** — viết spec phức tạp hơn, quản lý task, và ship feature production-ready.

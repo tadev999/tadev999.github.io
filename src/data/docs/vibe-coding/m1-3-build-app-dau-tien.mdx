@@ -1,0 +1,296 @@
+---
+title: "1.3 · Build app đầu tiên"
+description: "Tạo ra sản phẩm thực tế hoàn chỉnh mà không cần biết code — từ spec đến sản phẩm chạy được."
+pubDatetime: 2025-01-22
+tags: ["vibe-coding", "spec-driven", "ai", "non-tech", "giai-doan-1"]
+order: 6
+---
+
+
+# 1.3 · Build app đầu tiên
+
+> **Mục tiêu:** Tạo ra 1 sản phẩm thực tế hoàn chỉnh mà không cần biết code.
+
+
+---
+
+## Công cụ sử dụng
+
+<div class="tools-grid">
+
+<div class="tool-card">
+
+### Trợ lý AI dạng Chat
+*(vd: Claude, ChatGPT)*
+
+**Dùng cho:** Viết spec, generate code nhanh, giải thích logic
+
+**Ưu điểm:** Dễ tiếp cận, không cần setup, có chế độ xem trực tiếp (như Artifacts của Claude), tốt cho người mới.
+
+</div>
+
+<div class="tool-card">
+
+### AI Coding Agents
+*(vd: Cursor, Kiro, Trae...)*
+
+**Dùng cho:** Generate code tự động vào file, quản lý thư mục, preview realtime.
+
+**Ưu điểm:** Tích hợp IDE, chạy thử nghiệm môi trường thật, sửa lỗi qua nhiều file.
+
+</div>
+
+</div>
+
+**Gợi ý:** Nếu bạn chưa quen, hãy bắt đầu với công cụ dạng chat như **Claude** (nhớ bật tính năng Artifacts) — đơn giản và trực quan nhất.
+
+---
+
+## Các dạng sản phẩm phù hợp
+
+Chọn 1 trong 4 dạng sau để build trong bài này:
+
+### 1 · Landing Page
+
+**Phù hợp với:** Giới thiệu sản phẩm / dịch vụ / bản thân
+
+**Ví dụ:**
+- Trang giới thiệu dịch vụ freelance
+- Portfolio cá nhân
+- Landing page cho sản phẩm mới
+
+**Độ khó:** ⭐⭐☆☆☆
+
+---
+
+### 2 · Form thu thập data
+
+**Phù hợp với:** Thu thập email, feedback, đăng ký sự kiện
+
+**Ví dụ:**
+- Form đăng ký newsletter
+- Form feedback khách hàng
+- Form đăng ký workshop
+
+**Độ khó:** ⭐⭐☆☆☆
+
+---
+
+### 3 · Dashboard theo dõi
+
+**Phù hợp với:** Theo dõi chỉ số, công việc, thói quen
+
+**Ví dụ:**
+- Bảng theo dõi công việc hàng ngày
+- Tracker thói quen
+- Dashboard KPI đơn giản
+
+**Độ khó:** ⭐⭐⭐☆☆
+
+---
+
+### 4 · Công cụ tính toán
+
+**Phù hợp với:** Tính toán nội bộ, converter, calculator
+
+**Ví dụ:**
+- Tính lãi suất vay
+- Chuyển đổi đơn vị
+- Tính chi phí dự án
+
+**Độ khó:** ⭐⭐⭐☆☆
+
+---
+
+## Quy trình 5 bước
+
+<div class="process-flow">
+
+### Bước 1 · Spec
+
+Dùng spec bạn đã viết ở 1.2, hoặc viết spec mới cho sản phẩm bạn chọn.
+
+**Checklist:**
+- [ ] Có đủ 4 phần: Mục tiêu, Người dùng, Tính năng, Ràng buộc
+- [ ] Tính năng được liệt kê cụ thể, không mơ hồ
+- [ ] Ràng buộc rõ ràng (màu sắc, không cần backend, v.v.)
+
+---
+
+### Bước 2 · Generate
+
+Paste spec vào công cụ AI bạn chọn và yêu cầu generate.
+
+**Prompt gợi ý:**
+
+```
+Dựa vào spec sau, hãy tạo cho tôi [loại sản phẩm] hoàn chỉnh.
+Tạo HTML + CSS + JavaScript, chạy được ngay trong browser.
+
+[Paste spec của bạn vào đây]
+```
+
+**Lưu ý:**
+- Với công cụ dạng Chat (như Claude có Artifacts): bạn xem preview ngay bên cạnh. Nếu không có Artifacts, copy code ra file `.html` và mở bằng browser.
+- Với Coding Agents (như Kiro, Trae): code thường tự chạy trong màn hình preview tích hợp.
+
+---
+
+### Bước 3 · Preview
+
+Mở sản phẩm và dùng thử như một người dùng thật.
+
+**Checklist:**
+- [ ] Giao diện hiển thị đúng không?
+- [ ] Các nút/form hoạt động không?
+- [ ] Responsive trên mobile không? (thu nhỏ cửa sổ browser để test)
+- [ ] Màu sắc/style có đúng ý không?
+
+---
+
+### Bước 4 · Điều chỉnh mô tả
+
+Ghi lại những gì cần sửa — **càng cụ thể càng tốt**.
+
+**Ví dụ tốt:**
+> "Nút 'Đăng ký' cần to hơn, màu xanh đậm hơn (#1D9E75), và nằm giữa màn hình."
+
+**Ví dụ chưa tốt:**
+> "Nút này chưa đẹp." ← AI không biết sửa như thế nào.
+
+---
+
+### Bước 5 · Re-generate
+
+Gửi feedback cho AI và để nó sửa.
+
+**Prompt gợi ý:**
+
+```
+Cần điều chỉnh:
+1. [Điều chỉnh 1]
+2. [Điều chỉnh 2]
+3. [Điều chỉnh 3]
+
+Giữ nguyên phần còn lại.
+```
+
+**Lặp lại Bước 3-5** cho đến khi sản phẩm đúng ý.
+
+</div>
+
+---
+
+## Demo thực tế: Build Landing Page
+
+Dưới đây là ví dụ đầy đủ từ spec → sản phẩm.
+
+<div class="demo-section">
+
+### Spec ban đầu
+
+```
+Mục tiêu: Landing page giới thiệu dịch vụ tư vấn tài chính cá nhân.
+
+Người dùng: Khách hàng tiềm năng 30-45 tuổi, truy cập từ điện thoại.
+
+Tính năng:
+- Hero section: tiêu đề + tagline + CTA "Đặt lịch tư vấn"
+- 3 gói dịch vụ với giá và mô tả
+- Form liên hệ: tên, email, số điện thoại
+- Footer với thông tin liên hệ
+
+Ràng buộc:
+- Màu chủ đạo: xanh navy (#1E3A8A)
+- Responsive mobile-first
+- Không cần backend — form chỉ hiển thị "Đã nhận"
+```
+
+---
+
+### Vòng 1: Generate
+
+**Prompt:**
+> "Dựa vào spec trên, tạo landing page HTML + CSS + JS hoàn chỉnh."
+
+**Kết quả:** AI tạo ra trang web cơ bản, nhưng:
+- ❌ Màu xanh quá nhạt
+- ❌ Nút CTA không nổi bật
+- ✅ Layout responsive tốt
+
+---
+
+### Vòng 2: Điều chỉnh
+
+**Feedback:**
+> "Đổi màu xanh sang #1E3A8A. Nút CTA cần to hơn, màu cam (#F97316), có shadow."
+
+**Kết quả:** Tốt hơn nhiều!
+- ✅ Màu đúng brand
+- ✅ Nút CTA nổi bật
+- ❌ Form liên hệ thiếu validation
+
+---
+
+### Vòng 3: Hoàn thiện
+
+**Feedback:**
+> "Thêm validation cho form: email phải đúng định dạng, số điện thoại 10 số."
+
+**Kết quả:** ✅ Hoàn chỉnh, sẵn sàng deploy!
+
+</div>
+
+---
+
+## Tips để generate tốt hơn
+
+### 1 · Cung cấp ví dụ
+
+Nếu bạn thích style của một trang nào đó, chụp ảnh và gửi cho AI:
+
+> "Tạo landing page theo spec trên, nhưng style giống trang này [đính kèm ảnh]."
+
+### 2 · Yêu cầu giải thích
+
+Nếu muốn hiểu code, hỏi AI:
+
+> "Giải thích đoạn code validation form này hoạt động như thế nào?"
+
+### 3 · Chia nhỏ nếu phức tạp
+
+Nếu sản phẩm có nhiều tính năng, generate từng phần:
+
+1. Tạo layout cơ bản trước
+2. Thêm form
+3. Thêm validation
+4. Thêm styling
+
+### 4 · Lưu lại các version
+
+Mỗi lần AI generate, lưu lại code. Nếu version mới tệ hơn, quay lại version cũ.
+
+---
+
+## Bắt đầu với dự án đầu tiên
+
+Đây là lúc để áp dụng những gì đã học vào thực tế. Quy trình 5 bước (Spec → Generate → Preview → Điều chỉnh → Re-generate) là nền tảng để tạo ra sản phẩm chất lượng.
+
+**Một số gợi ý khi bắt đầu:**
+- Chọn một dạng sản phẩm đơn giản để làm quen (landing page hoặc form)
+- Sử dụng spec đã chuẩn bị từ trước hoặc viết spec mới
+- Thử nghiệm với các công cụ AI khác nhau (Claude, Cursor, Kiro...) để xem công cụ nào phù hợp hơn
+- Iterate nhiều lần để cải thiện kết quả
+- Ghi chú lại những gì AI làm tốt và chưa tốt để học hỏi
+
+**Dấu hiệu sản phẩm đã sẵn sàng:**
+- Chạy được trong browser không có lỗi
+- Đúng với spec ban đầu (hoặc spec đã điều chỉnh)
+- Responsive tốt trên mobile
+- Bạn cảm thấy hài lòng với kết quả
+
+---
+
+## Tiếp theo
+
+Bạn đã có sản phẩm đầu tiên. Bước tiếp theo là học cách **iterate hiệu quả** — sửa lỗi, cải thiện, và làm sản phẩm ngày càng tốt hơn.

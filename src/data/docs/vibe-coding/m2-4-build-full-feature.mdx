@@ -1,0 +1,508 @@
+---
+title: "2.4 · Build full feature"
+description: "Áp dụng toàn bộ quy trình từ requirement → production-ready code."
+pubDatetime: 2025-01-27
+tags: ["vibe-coding", "spec-driven", "ai", "developer", "giai-doan-2"]
+order: 11
+---
+
+# 2.4 · Build full feature
+
+> **Mục tiêu:** Áp dụng toàn bộ quy trình từ requirement → production-ready code.
+
+---
+
+## Dự án thực hành
+
+Chọn 1 feature thực tế để build end-to-end:
+
+<div class="project-options">
+
+### Option A: Comment System
+
+**Độ khó:** ⭐⭐⭐☆☆
+
+**Scope:**
+- User có thể comment trên post/article
+- Nested comments (reply)
+- Edit/delete own comments
+- Real-time updates (optional)
+
+**Tech stack gợi ý:** React + Node.js + PostgreSQL
+
+---
+
+### Option B: File Upload & Management
+
+**Độ khó:** ⭐⭐⭐⭐☆
+
+**Scope:**
+- Upload files (images, PDFs)
+- Preview thumbnails
+- Organize into folders
+- Share links
+
+**Tech stack gợi ý:** React + Node.js + S3/Cloudinary
+
+---
+
+### Option C: Notification System
+
+**Độ khó:** ⭐⭐⭐⭐☆
+
+**Scope:**
+- In-app notifications
+- Mark as read/unread
+- Notification preferences
+- Real-time push
+
+**Tech stack gợi ý:** React + Node.js + WebSocket/Pusher
+
+---
+
+### Option D: Search & Filter
+
+**Độ khó:** ⭐⭐⭐☆☆
+
+**Scope:**
+- Full-text search
+- Filters (category, price, date)
+- Sort options
+- Pagination
+
+**Tech stack gợi ý:** React + Node.js + Elasticsearch (hoặc PostgreSQL full-text)
+
+</div>
+
+---
+
+## Quy trình đầy đủ
+
+<div class="full-workflow">
+
+### Phase 1: Requirement (30 phút)
+
+**Input:** Ý tưởng feature
+
+**Công việc:**
+1. Viết user stories (3–5 stories)
+2. Xác định success metrics
+3. Liệt kê constraints (timeline, tech stack, scope)
+
+**Output:** Requirement doc (1 trang)
+
+**Tool:** Reasoning Model (như Claude)
+
+---
+
+### Phase 2: Spec (60–90 phút)
+
+**Input:** Requirement doc
+
+**Công việc:**
+1. Viết technical spec đầy đủ (theo template M2.3)
+2. Design API contracts
+3. Design data model
+4. Liệt kê edge cases
+5. Viết acceptance criteria
+
+**Output:** Technical spec (3–5 trang)
+
+**Tool:** Reasoning Model (như Claude)
+
+---
+
+### Phase 3: Task List (30 phút)
+
+**Input:** Technical spec
+
+**Công việc:**
+1. Chia feature thành tasks nhỏ
+2. Estimate mỗi task
+3. Xác định dependencies
+4. Prioritize tasks
+
+**Output:** Task list với estimate
+
+**Tool:** Reasoning Model hoặc Coding Agent
+
+**Ví dụ task list:**
+
+```
+1. [Backend] Create database schema (30 min)
+2. [Backend] Implement POST /comments API (45 min)
+3. [Backend] Implement GET /comments API with pagination (45 min)
+4. [Frontend] Create CommentForm component (30 min)
+5. [Frontend] Create CommentList component (45 min)
+6. [Frontend] Integrate API calls (30 min)
+7. [Testing] Write unit tests for API (45 min)
+8. [Testing] Write integration tests (60 min)
+```
+
+---
+
+### Phase 4: Code Generation (2–3 giờ)
+
+**Input:** Spec + Task list
+
+**Công việc:**
+1. Generate code theo từng task
+2. Test mỗi task sau khi generate
+3. Iterate nếu có bug
+4. Integrate các parts lại
+
+**Output:** Working code
+
+**Tool:** Coding Agent (Cursor, Kiro, Trae...)
+
+**Tips:**
+- Generate từng task một, không làm hết cùng lúc
+- Test ngay sau mỗi task
+- Commit code sau mỗi task hoàn thành
+
+---
+
+### Phase 5: Review (30–60 phút)
+
+**Input:** Code + Spec
+
+**Công việc:**
+1. Self-review: đọc lại code
+2. AI review: paste code vào Reasoning Model
+3. Check acceptance criteria: pass hết chưa?
+4. Manual testing: dùng thử như user
+
+**Output:** Review notes + fix list
+
+**Tool:** Reasoning Model + manual testing
+
+**Checklist review:**
+- [ ] Code đúng spec?
+- [ ] Pass tất cả acceptance criteria?
+- [ ] Không có security issues?
+- [ ] Code clean và maintainable?
+- [ ] Tests cover đủ cases?
+
+---
+
+### Phase 6: Fix & Polish (30–60 phút)
+
+**Input:** Review notes
+
+**Công việc:**
+1. Fix bugs từ review
+2. Refactor code nếu cần
+3. Add missing tests
+4. Polish UI/UX
+
+**Output:** Production-ready code
+
+**Tool:** Coding Agent
+
+---
+
+### Phase 7: Ship (15–30 phút)
+
+**Input:** Production-ready code
+
+**Công việc:**
+1. Final testing trên staging
+2. Deploy to production
+3. Monitor logs/errors
+4. Update documentation
+
+**Output:** Feature live!
+
+</div>
+
+---
+
+## Kỹ năng bổ trợ
+
+### 1 · Debugging cùng AI
+
+Khi gặp bug, cung cấp đủ context cho AI:
+
+**Prompt template:**
+
+```
+Tôi gặp bug này:
+
+**Expected behavior:**
+[Mô tả behavior đúng]
+
+**Actual behavior:**
+[Mô tả behavior sai]
+
+**Error log:**
+[Paste error log đầy đủ]
+
+**Code liên quan:**
+[Paste code có bug]
+
+**Stack trace:**
+[Paste stack trace nếu có]
+
+Hãy giúp tôi debug và fix.
+```
+
+**Ví dụ:**
+
+```
+Tôi gặp bug này:
+
+**Expected:** Khi submit comment, nó hiển thị ngay trong list
+**Actual:** Comment không hiển thị, phải refresh page
+
+**Error log:**
+```
+POST /comments 500 Internal Server Error
+Error: Cannot read property 'id' of undefined
+```
+
+**Code:**
+```js
+const createComment = async (req, res) => {
+  const { postId, content } = req.body;
+  const comment = await Comment.create({
+    post_id: postId,
+    user_id: req.user.id, // ← req.user undefined?
+    content
+  });
+  res.json(comment);
+};
+```
+
+Hãy giúp tôi debug.
+```
+
+---
+
+### 2 · Code Review cùng AI
+
+**Prompt template:**
+
+```
+Review code này cho tôi:
+
+[Paste code]
+
+Kiểm tra:
+1. Logic có đúng không?
+2. Security issues?
+3. Performance issues?
+4. Best practices?
+5. Suggest improvements
+```
+
+**Ví dụ feedback từ AI:**
+
+```
+✅ Logic đúng
+❌ Security issue: SQL injection risk ở line 15
+⚠️ Performance: N+1 query ở line 23
+💡 Suggestion: Dùng Promise.all thay vì await trong loop
+```
+
+---
+
+### 3 · Refactoring cùng AI
+
+**Prompt template:**
+
+```
+Refactor code này để:
+1. [Mục tiêu 1: ví dụ "dễ đọc hơn"]
+2. [Mục tiêu 2: ví dụ "performance tốt hơn"]
+3. [Mục tiêu 3: ví dụ "dễ test hơn"]
+
+[Paste code]
+
+Giữ nguyên behavior, chỉ cải thiện structure.
+```
+
+---
+
+## Case Study: Build Comment System
+
+<div class="case-study">
+
+### Phase 1: Requirement
+
+**User stories:**
+1. As a reader, I want to comment on articles so that I can share my thoughts
+2. As a commenter, I want to reply to other comments so that I can have discussions
+3. As a commenter, I want to edit/delete my own comments
+
+**Success metrics:**
+- 30% readers leave comments
+- Average 3 comments per article
+
+**Constraints:**
+- Timeline: 1 day
+- Tech: React + Node.js + PostgreSQL
+- No real-time (phase 2)
+
+---
+
+### Phase 2: Spec
+
+*(Viết spec đầy đủ theo template 2.3 — 3 trang)*
+
+---
+
+### Phase 3: Task List
+
+```
+Backend (2.5h):
+1. Create comments table (20 min)
+2. POST /comments - create comment (30 min)
+3. GET /comments?postId=X - list comments (30 min)
+4. PUT /comments/:id - edit comment (30 min)
+5. DELETE /comments/:id - delete comment (20 min)
+6. Add auth middleware (20 min)
+
+Frontend (2h):
+7. CommentForm component (30 min)
+8. CommentItem component (30 min)
+9. CommentList component (30 min)
+10. Integrate API calls (30 min)
+
+Testing (1.5h):
+11. Unit tests for API (45 min)
+12. Integration tests (45 min)
+
+Total: 6 hours
+```
+
+---
+
+### Phase 4: Code Generation
+
+**Task 1: Create comments table**
+
+Prompt cho Coding Agent:
+```
+Create PostgreSQL migration for comments table:
+- id (serial primary key)
+- post_id (int, foreign key to posts)
+- user_id (int, foreign key to users)
+- parent_id (int, nullable, self-reference for replies)
+- content (text)
+- created_at, updated_at (timestamps)
+```
+
+**Task 2: POST /comments API**
+
+Prompt:
+```
+Implement POST /comments endpoint theo spec:
+- Validate: content không empty, postId exists
+- Create comment in DB
+- Return comment với user info (join)
+```
+
+*(Tiếp tục cho các tasks còn lại...)*
+
+---
+
+### Phase 5: Review
+
+**Self-review findings:**
+- ✅ All APIs work
+- ❌ Missing validation cho parent_id
+- ❌ No rate limiting
+
+**AI review:**
+```
+Review code này:
+[paste all backend code]
+
+Spec:
+[paste spec]
+```
+
+**AI feedback:**
+- ✅ Logic đúng
+- ❌ SQL injection risk ở raw query
+- ⚠️ N+1 query khi load nested comments
+- 💡 Suggest: dùng recursive CTE cho nested comments
+
+---
+
+### Phase 6: Fix
+
+Fix theo feedback:
+1. Add validation cho parent_id
+2. Fix SQL injection → dùng parameterized query
+3. Optimize nested comments query
+4. Add rate limiting (5 comments / minute)
+
+---
+
+### Phase 7: Ship
+
+1. Test trên staging ✅
+2. Deploy to production ✅
+3. Monitor: no errors ✅
+4. Update docs ✅
+
+**Kết quả:** Feature live sau 6 giờ!
+
+</div>
+
+---
+
+## Dự án thực hành end-to-end
+
+Đây là cơ hội để áp dụng toàn bộ quy trình từ requirement → production-ready code. Chọn một feature thực tế và thực hiện đầy đủ 7 phases.
+
+**Quy trình đầy đủ:**
+1. Requirement (30 phút) - Viết user stories và xác định scope
+2. Spec (60–90 phút) - Technical spec chi tiết
+3. Task List (30 phút) - Chia nhỏ và estimate
+4. Code Generation (2–3 giờ) - Generate và test từng task
+5. Review (30–60 phút) - Self-review và AI review
+6. Fix & Polish (30–60 phút) - Sửa bugs và cải thiện
+7. Ship (15–30 phút) - Deploy và monitor
+
+**Những điều đáng ghi nhận:**
+- Spec đầy đủ theo template đã học
+- Task list với estimate và dependencies
+- Prompts chính cho mỗi task
+- Review notes và cách fix
+- Thời gian thực tế so với estimate
+
+**Dấu hiệu feature sẵn sàng:**
+- Code chạy được và pass tất cả acceptance criteria
+- Có tests đầy đủ (unit + integration)
+- Đã review và fix các issues
+- Feature sẵn sàng deploy lên production
+
+---
+
+## Kết quả Giai đoạn 2
+
+🎉 **Chúc mừng!** Bạn đã hoàn thành Giai đoạn 2.
+
+**Bạn đã học được:**
+- ✅ Quy trình Spec-Driven Development đầy đủ
+- ✅ Kết hợp Reasoning Model + Coding Agent hiệu quả
+- ✅ Viết spec chuyên nghiệp
+- ✅ Build feature production-ready
+
+**Bạn có thể:**
+- Ship feature nhanh gấp 3–5× so với code thủ công
+- Viết spec rõ ràng cho team
+- Debug, review, refactor code cùng AI
+- Deliver production-ready code
+
+**So với Giai đoạn 1:**
+- Giai đoạn 1: Build sản phẩm đơn giản (landing page, form)
+- Giai đoạn 2: Build feature phức tạp (auth, payment, comment system)
+
+---
+
+## Tiếp theo
+
+Bạn đã biết cách làm việc như một developer chuyên nghiệp. Giai đoạn 3 sẽ dạy bạn cách **dẫn dắt team** — viết spec cho hệ thống lớn, orchestrate nhiều AI agents, và chuẩn hoá quy trình cho cả team.
