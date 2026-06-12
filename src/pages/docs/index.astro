@@ -22,49 +22,81 @@ const tutorials = allDocs
 function countPages(slug: string) {
   return allDocs.filter(e => e.id.startsWith(slug + "/") && !e.id.endsWith("/index")).length;
 }
+
+// Map each slug to a beautiful gradient for the book cover
+function getBookGradient(slug: string) {
+  const gradients: Record<string, string> = {
+    "vibe-coding": "linear-gradient(135deg, #E21B54 0%, #8B008B 100%)",
+    "ticket2code": "linear-gradient(135deg, #0052D4 0%, #4364F7 50%, #6FB1FC 100%)",
+    "project-management": "linear-gradient(135deg, #f857a6 0%, #ff5858 100%)",
+    "multi-agent-antigravity": "linear-gradient(135deg, #141E30 0%, #243B55 100%)",
+    "git-workflow": "linear-gradient(135deg, #11998e 0%, #38ef7d 100%)",
+    "endogenism": "linear-gradient(135deg, #134e5e 0%, #71b280 100%)",
+  };
+  return gradients[slug] || "linear-gradient(135deg, #3a7bd5 0%, #3a6073 100%)";
+}
 ---
 
 <Layout title={`Articles | ${SITE.title}`} description="Danh sách các chuyên mục chia sẻ về coding, project management và developer workflow.">
   <Header />
   <main id="main-content" class="app-layout py-12">
-    <div class="mb-10">
+    <div class="mb-12">
       <h1 class="text-3xl font-bold sm:text-4xl">Articles</h1>
-      <p class="mt-3 text-foreground/60">
-        Các chuyên mục chia sẻ thực chiến về coding, workflow và developer mindset.
+      <p class="mt-3 text-foreground/60 max-w-2xl">
+        Các chuyên mục chia sẻ thực chiến về coding, workflow và developer mindset dưới dạng những cuốn sách đúc kết kinh nghiệm.
       </p>
     </div>
 
     {tutorials.length === 0 ? (
       <p class="text-foreground/50 italic">Chưa có bài viết nào.</p>
     ) : (
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid gap-8 grid-cols-1 md:grid-cols-2">
         {tutorials.map(tutorial => {
           // tutorial.id = "vibe-coding" (Astro strips /index suffix)
           const folderSlug = tutorial.id;
           // Count sub-pages: entries that start with "vibe-coding/" 
           const pageCount = allDocs.filter(e => e.id.startsWith(folderSlug + "/")).length;
           const href = `/docs/${folderSlug}`;
+          const gradient = getBookGradient(folderSlug);
 
           return (
             <a
               href={href}
-              class="group flex flex-col gap-3 rounded-xl border border-border bg-background p-6 shadow-sm transition-all hover:border-accent hover:shadow-md"
+              class="book-card group flex flex-row gap-6 items-center rounded-2xl border border-border/70 bg-background/30 backdrop-blur-md p-5 shadow-sm transition-all duration-300 hover:border-accent/40 hover:bg-background/60 hover:shadow-xl"
             >
-              {tutorial.data.icon && (
-                <span class="text-3xl" aria-hidden="true">{tutorial.data.icon}</span>
-              )}
-              <div>
-                <h2 class="text-lg font-semibold group-hover:text-accent transition-colors">
+              {/* 3D Book Visual */}
+              <div class="book-container shrink-0" aria-hidden="true">
+                <div class="book-cover-3d">
+                  <div class="book-spine" />
+                  <div class="book-cover-face" style={`background: ${gradient}`}>
+                    <div class="book-cover-accent-line" />
+                    <div class="book-cover-icon">{tutorial.data.icon || "📖"}</div>
+                    <div class="book-cover-title">{tutorial.data.title}</div>
+                    <div class="book-cover-author">{SITE.author}</div>
+                  </div>
+                  <div class="book-pages-side" />
+                </div>
+              </div>
+
+              {/* Book Info */}
+              <div class="flex-1 min-w-0 flex flex-col h-full py-1">
+                <span class="text-[10px] font-semibold uppercase tracking-wider text-accent mb-1 opacity-95">Chuyên mục</span>
+                <h2 class="text-lg font-bold text-foreground group-hover:text-accent transition-colors duration-200 line-clamp-3 leading-snug">
                   {tutorial.data.title}
                 </h2>
                 {tutorial.data.description && (
-                  <p class="mt-1.5 text-sm text-foreground/60 line-clamp-3">
+                  <p class="mt-2 text-xs text-foreground/60 leading-relaxed line-clamp-3">
                     {tutorial.data.description}
                   </p>
                 )}
-              </div>
-              <div class="mt-auto pt-2 text-xs text-foreground/40">
-                {pageCount} bài học
+                <div class="mt-auto pt-4 flex items-center justify-between">
+                  <span class="text-[11px] font-medium text-foreground/50 bg-foreground/5 px-2 py-0.5 rounded-md border border-border/40">
+                    {pageCount} bài viết
+                  </span>
+                  <span class="text-xs font-semibold text-accent opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all duration-200 flex items-center gap-0.5">
+                    Đọc sách <span>→</span>
+                  </span>
+                </div>
               </div>
             </a>
           );
@@ -74,3 +106,114 @@ function countPages(slug: string) {
   </main>
   <Footer />
 </Layout>
+
+<style>
+  .book-container {
+    perspective: 1000px;
+    width: 100px;
+    height: 145px;
+  }
+
+  .book-cover-3d {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    box-shadow: 4px 6px 14px rgba(0, 0, 0, 0.22);
+    border-radius: 3px 5px 5px 3px;
+    transform: rotateY(-6deg);
+  }
+
+  .book-card:hover .book-cover-3d {
+    transform: rotateY(-24deg) translateX(3px);
+    box-shadow: 12px 14px 22px rgba(0, 0, 0, 0.32);
+  }
+
+  .book-spine {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 7px;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.22);
+    border-radius: 3px 0 0 3px;
+    z-index: 5;
+    box-shadow: inset -1px 0 2px rgba(0,0,0,0.12);
+  }
+
+  .book-cover-face {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 3px 5px 5px 3px;
+    padding: 8px 6px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    text-align: center;
+    z-index: 4;
+    overflow: hidden;
+    box-shadow: 
+      inset 2px 0 4px rgba(255,255,255,0.12), 
+      inset 0 0 8px rgba(0,0,0,0.12);
+  }
+
+  .book-cover-accent-line {
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 1px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    z-index: 10;
+  }
+
+  .book-cover-icon {
+    font-size: 1.4rem;
+    margin-top: 6px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  }
+
+  .book-cover-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    line-height: 1.35;
+    margin: auto 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.45);
+    padding: 0 2px;
+    font-family: 'Space Grotesk', var(--font-space-grotesk), sans-serif;
+  }
+
+  .book-cover-author {
+    font-size: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    opacity: 0.75;
+    font-weight: 600;
+    margin-bottom: 2px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  /* 3D Pages on the side */
+  .book-pages-side {
+    position: absolute;
+    top: 2px;
+    right: -3px;
+    width: 5px;
+    height: calc(100% - 4px);
+    background: linear-gradient(to right, #dedede, #fbfbfb 40%, #dedede 60%, #b8b8b8);
+    box-shadow: inset 0 0 2px rgba(0,0,0,0.1);
+    transform: rotateY(90deg) translateZ(2.5px);
+    z-index: 3;
+    border-radius: 0 1.5px 1.5px 0;
+  }
+</style>

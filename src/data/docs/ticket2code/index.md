@@ -1,11 +1,11 @@
 ---
-title: "Chuẩn hóa quy trình sử dụng AI với ticket2code - Tickets to Code"
+title: "Chuẩn hóa quy trình sử dụng AI với ticket2code"
 description: "Chuỗi bài viết chia sẻ về sự ra đời, triết lý thiết kế và cách vận hành của ticket2code giúp chuẩn hóa quy trình làm việc với AI từ JIRA đến Git Commit."
 order: 1
 icon: "📝"
 ---
 
-# 📝 Chuẩn hóa quy trình sử dụng AI với ticket2code - Tickets to Code
+# 📝 Chuẩn hóa quy trình sử dụng AI với ticket2code
 
 Chuỗi bài viết này xuất phát từ nỗi đau thực tế của một đội ngũ phát triển khi ứng dụng AI vào dự án một cách tự phát và hỗn loạn, dẫn đến sự thiếu nhất quán trong mã nguồn. Từ đó, ticket2code được xây dựng như một giải pháp chuẩn hóa quy trình làm việc với AI từ lúc đọc yêu cầu cho đến khi kiểm thử và bàn giao.
 
