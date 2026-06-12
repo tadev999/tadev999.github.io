@@ -106,20 +106,20 @@ html[data-theme="dark"] code {
   color: var(--color-foreground) !important;
 }
 
-/* Giảm font size 20% cho toàn bộ giao diện - Updated */
+/* Tăng font size 15% cho toàn bộ giao diện */
 html {
-  font-size: 13px !important;
+  font-size: 15px !important;
 }
 
 @media (min-width: 640px) {
   html {
-    font-size: 14px !important;
+    font-size: 16px !important;
   }
 }
 
 @media (min-width: 1024px) {
   html {
-    font-size: 15px !important;
+    font-size: 17.25px !important;
   }
 }
 
