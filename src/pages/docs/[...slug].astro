@@ -81,6 +81,12 @@ async function getNavigationTree(): Promise<NavigationTree> {
       } else {
         const children = await enrich(node.children ?? [], node.path);
         const dirMeta = parser.mergeMetadata({}, metaConfig, node.name);
+        try {
+          const ownMeta = await parser.parseMetaFile(path.join(node.path, "_meta.json"));
+          if (ownMeta.title) {
+            dirMeta.title = ownMeta.title;
+          }
+        } catch { /* ignore */ }
         enriched.push({ ...node, children, metadata: dirMeta });
       }
     }
@@ -135,26 +141,23 @@ const pageTitle = entry.data.title;
 const pageDescription = entry.data.description;
 
 // ── Prev / Next within the same tutorial ──────────────────────────────────────
-// Get all pages in this tutorial, sorted by order then alphabetically
-const tutorialPages = allDocs
-  .filter(d => {
-    const parts = d.id.split("/");
-    return parts[0] === tutorialSlug;
-  })
-  .sort((a, b) => {
-    const orderA = a.data.order ?? 999;
-    const orderB = b.data.order ?? 999;
-    if (orderA !== orderB) return orderA - orderB;
-    return a.data.title.localeCompare(b.data.title);
-  });
-
-const currentIndex = tutorialPages.findIndex(d => d.id === entry.id);
-const prevPage = currentIndex > 0 ? tutorialPages[currentIndex - 1] : null;
-const nextPage = currentIndex < tutorialPages.length - 1 ? tutorialPages[currentIndex + 1] : null;
-
-function docPath(id: string) {
-  return `/docs/${id}`;
+// Flatten the navigation tree to determine sequential reading order of files.
+const flatPages: { title: string; href: string }[] = [];
+function flatten(items: typeof navigationTree.root) {
+  for (const item of items) {
+    if (item.type === "file") {
+      flatPages.push({ title: item.title, href: item.path });
+    }
+    if (item.children) {
+      flatten(item.children);
+    }
+  }
 }
+flatten(navigationTree.root);
+
+const currentIndex = flatPages.findIndex(p => p.href === currentPath);
+const prevPage = currentIndex > 0 ? flatPages[currentIndex - 1] : null;
+const nextPage = currentIndex !== -1 && currentIndex < flatPages.length - 1 ? flatPages[currentIndex + 1] : null;
 ---
 
 <DocsLayout
@@ -170,24 +173,24 @@ function docPath(id: string) {
   <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 not-prose">
     {prevPage && (
       <a
-        href={docPath(prevPage.id)}
+        href={prevPage.href}
         class="flex w-full gap-1 hover:opacity-75 text-foreground hover:text-accent transition-colors"
       >
         <IconChevronLeft class="inline-block flex-none mt-0.5" />
         <div>
           <div class="text-xs text-foreground/50 mb-0.5">Previous</div>
-          <div class="text-sm font-medium">{prevPage.data.title}</div>
+          <div class="text-sm font-medium">{prevPage.title}</div>
         </div>
       </a>
     )}
     {nextPage && (
       <a
-        href={docPath(nextPage.id)}
+        href={nextPage.href}
         class="flex w-full justify-end gap-1 text-end hover:opacity-75 text-foreground hover:text-accent transition-colors sm:col-start-2"
       >
         <div>
           <div class="text-xs text-foreground/50 mb-0.5">Next</div>
-          <div class="text-sm font-medium">{nextPage.data.title}</div>
+          <div class="text-sm font-medium">{nextPage.title}</div>
         </div>
         <IconChevronRight class="inline-block flex-none mt-0.5" />
       </a>

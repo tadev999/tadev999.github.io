@@ -177,7 +177,15 @@ export class NavigationGenerator {
       }
 
       // Resolve title: frontmatter title > filename without extension
-      const title = this._resolveTitle(node, metadata.title);
+      let title = this._resolveTitle(node, metadata.title);
+
+      const isEndogenismArticle = node.type === 'file' && 
+                                  node.path.includes('endogenism') && 
+                                  !node.name.startsWith('index.');
+      
+      if (isEndogenismArticle && typeof metadata.order === 'number') {
+        title = `Bài ${metadata.order} - ${title}`;
+      }
 
       // Resolve URL path from file system path
       const urlPath = this._resolveUrlPath(node);

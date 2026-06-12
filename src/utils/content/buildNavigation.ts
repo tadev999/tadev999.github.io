@@ -230,6 +230,18 @@ async function enrichWithMetadata(
 
       // Apply directory-level metadata from parent _meta.json
       const dirMeta = parser.mergeMetadata({}, metaConfig, node.name);
+
+      // Load the directory's own _meta.json to get its own title
+      try {
+        const ownMetaPath = path.join(node.path, '_meta.json');
+        const ownMeta = await parser.parseMetaFile(ownMetaPath);
+        if (ownMeta.title) {
+          dirMeta.title = ownMeta.title;
+        }
+      } catch {
+        // ignore
+      }
+
       enriched.push({ ...node, children, metadata: dirMeta });
     }
   }

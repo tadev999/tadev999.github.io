@@ -250,11 +250,6 @@ export class MetadataParser {
       };
     }
 
-    // Meta config title for directory (if this is being used for a directory)
-    if (metaConfig.title && !merged.title) {
-      merged.title = metaConfig.title;
-    }
-
     return merged;
   }
 
