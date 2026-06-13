@@ -1,180 +1,106 @@
-# AstroPaper 📄
+# tadev999.github.io - Blog & Documentation Platform 🚀
 
-![AstroPaper](public/astropaper-og.jpg)
-[![Figma](https://img.shields.io/badge/Figma-F24E1E?style=for-the-badge&logo=figma&logoColor=white)](https://www.figma.com/community/file/1356898632249991861)
-![Typescript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![GitHub](https://img.shields.io/github/license/satnaing/astro-paper?color=%232F3741&style=for-the-badge)
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-%23FE5196?logo=conventionalcommits&logoColor=white&style=for-the-badge)](https://conventionalcommits.org)
-[![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg?style=for-the-badge)](http://commitizen.github.io/cz-cli/)
-
-AstroPaper is a minimal, responsive, accessible and SEO-friendly Astro blog theme. This theme is designed and crafted based on [my personal blog](https://satnaing.dev/blog).
-
-Read [the blog posts](https://astro-paper.pages.dev/posts/) or check [the README Documentation Section](#-documentation) for more info.
-
-## 🔥 Features
-
-- [x] type-safe markdown
-- [x] super fast performance
-- [x] accessible (Keyboard/VoiceOver)
-- [x] responsive (mobile ~ desktops)
-- [x] SEO-friendly
-- [x] light & dark mode
-- [x] fuzzy search
-- [x] draft posts & pagination
-- [x] sitemap & rss feed
-- [x] followed best practices
-- [x] highly customizable
-- [x] dynamic OG image generation for blog posts [#15](https://github.com/satnaing/astro-paper/pull/15) ([Blog Post](https://astro-paper.pages.dev/posts/dynamic-og-image-generation-in-astropaper-blog-posts/))
-
-_Note: I've tested screen-reader accessibility of AstroPaper using **VoiceOver** on Mac and **TalkBack** on Android. I couldn't test all other screen-readers out there. However, accessibility enhancements in AstroPaper should be working fine on others as well._
-
-## ✅ Lighthouse Score
-
-<p align="center">
-  <a href="https://pagespeed.web.dev/report?url=https%3A%2F%2Fastro-paper.pages.dev%2F&form_factor=desktop">
-    <img width="710" alt="AstroPaper Lighthouse Score" src="AstroPaper-lighthouse-score.svg">
-  </a>
-</p>
-
-## 🚀 Project Structure
-
-Inside of AstroPaper, you'll see the following folders and files:
-
-```bash
-/
-├── public/
-│   ├── pagefind/ # auto-generated when build
-│   ├── favicon.svg
-│   └── astropaper-og.jpg
-├── src/
-│   ├── assets/
-│   │   ├── icons/
-│   │   └── images/
-│   ├── components/
-│   ├── data/
-│   │   └── blog/
-│   │       └── some-blog-posts.md
-│   ├── layouts/
-│   ├── pages/
-│   ├── scripts/
-│   ├── styles/
-│   ├── utils/
-│   ├── config.ts
-│   ├── constants.ts
-│   ├── content.config.ts
-│   ├── env.d.ts
-│   └── remark-collapse.d.ts
-└── astro.config.ts
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-All blog posts are stored in `src/data/blog` directory.
-
-## 📖 Documentation
-
-Documentation can be read in two formats\_ _markdown_ & _blog post_.
-
-- Configuration - [markdown](src/data/blog/how-to-configure-astropaper-theme.md) | [blog post](https://astro-paper.pages.dev/posts/how-to-configure-astropaper-theme/)
-- Add Posts - [markdown](src/data/blog/adding-new-post.md) | [blog post](https://astro-paper.pages.dev/posts/adding-new-posts-in-astropaper-theme/)
-- Customize Color Schemes - [markdown](src/data/blog/customizing-astropaper-theme-color-schemes.md) | [blog post](https://astro-paper.pages.dev/posts/customizing-astropaper-theme-color-schemes/)
-- Predefined Color Schemes - [markdown](src/data/blog/predefined-color-schemes.md) | [blog post](https://astro-paper.pages.dev/posts/predefined-color-schemes/)
-
-## 💻 Tech Stack
-
-**Main Framework** - [Astro](https://astro.build/)  
-**Type Checking** - [TypeScript](https://www.typescriptlang.org/)  
-**Styling** - [TailwindCSS](https://tailwindcss.com/)  
-**UI/UX** - [Figma Design File](https://www.figma.com/community/file/1356898632249991861)  
-**Static Search** - [FuseJS](https://pagefind.app/)  
-**Icons** - [Tablers](https://tabler-icons.io/)  
-**Code Formatting** - [Prettier](https://prettier.io/)  
-**Deployment** - [Cloudflare Pages](https://pages.cloudflare.com/)  
-**Illustration in About Page** - [https://freesvgillustration.com](https://freesvgillustration.com/)  
-**Linting** - [ESLint](https://eslint.org)
-
-## 👨🏻‍💻 Running Locally
-
-You can start using this project locally by running the following command in your desired directory:
-
-```bash
-# pnpm
-pnpm create astro@latest --template satnaing/astro-paper
-
-# npm
-npm create astro@latest -- --template satnaing/astro-paper
-
-# yarn
-yarn create astro --template satnaing/astro-paper
-
-# bun
-bun create astro@latest -- --template satnaing/astro-paper
-```
-
-Then start the project by running the following commands:
-
-```bash
-# install dependencies if you haven't done so in the previous step.
-pnpm install
-
-# start running the project
-pnpm run dev
-```
-
-As an alternative approach, if you have Docker installed, you can use Docker to run this project locally. Here's how:
-
-```bash
-# Build the Docker image
-docker build -t astropaper .
-
-# Run the Docker container
-docker run -p 4321:80 astropaper
-```
-
-## Google Site Verification (optional)
-
-You can easily add your [Google Site Verification HTML tag](https://support.google.com/webmasters/answer/9008080#meta_tag_verification&zippy=%2Chtml-tag) in AstroPaper using an environment variable. This step is optional. If you don't add the following environment variable, the google-site-verification tag won't appear in the HTML `<head>` section.
-
-```bash
-# in your environment variable file (.env)
-PUBLIC_GOOGLE_SITE_VERIFICATION=your-google-site-verification-value
-```
-
-> See [this discussion](https://github.com/satnaing/astro-paper/discussions/334#discussioncomment-10139247) for adding AstroPaper to the Google Search Console.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-> **_Note!_** For `Docker` commands we must have it [installed](https://docs.docker.com/engine/install/) in your machine.
-
-| Command                              | Action                                                                                                                           |
-| :----------------------------------- | :------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm install`                       | Installs dependencies                                                                                                            |
-| `pnpm run dev`                       | Starts local dev server at `localhost:4321`                                                                                      |
-| `pnpm run build`                     | Build your production site to `./dist/`                                                                                          |
-| `pnpm run preview`                   | Preview your build locally, before deploying                                                                                     |
-| `pnpm run format:check`              | Check code format with Prettier                                                                                                  |
-| `pnpm run format`                    | Format codes with Prettier                                                                                                       |
-| `pnpm run sync`                      | Generates TypeScript types for all Astro modules. [Learn more](https://docs.astro.build/en/reference/cli-reference/#astro-sync). |
-| `pnpm run lint`                      | Lint with ESLint                                                                                                                 |
-| `docker compose up -d`               | Run AstroPaper on docker, You can access with the same hostname and port informed on `dev` command.                              |
-| `docker compose run app npm install` | You can run any command above into the docker container.                                                                         |
-| `docker build -t astropaper .`       | Build Docker image for AstroPaper.                                                                                               |
-| `docker run -p 4321:80 astropaper`   | Run AstroPaper on Docker. The website will be accessible at `http://localhost:4321`.                                             |
-
-> **_Warning!_** Windows PowerShell users may need to install the [concurrently package](https://www.npmjs.com/package/concurrently) if they want to [run diagnostics](https://docs.astro.build/en/reference/cli-reference/#astro-check) during development (`astro check --watch & astro dev`). For more info, see [this issue](https://github.com/satnaing/astro-paper/issues/113).
-
-## ✨ Feedback & Suggestions
-
-If you have any suggestions/feedback, you can contact me via [my email](mailto:contact@satnaing.dev). Alternatively, feel free to open an issue if you find bugs or want to request new features.
-
-## 📜 License
-
-Licensed under the MIT License, Copyright © 2025
+Đây là mã nguồn của trang web cá nhân và hệ thống tài liệu kỹ thuật của **tadev999**. Được xây dựng dựa trên framework **Astro** và thiết kế hiện đại, trang web tối ưu hoá hiệu suất tối đa (Static Site Generation), chuẩn SEO, hỗ trợ tìm kiếm tĩnh và tích hợp hệ thống quản lý nội dung (CMS) chạy trực tiếp trên trình duyệt từ mọi thiết bị.
 
 ---
 
-Made with 🤍 by [Sat Naing](https://satnaing.dev) 👨🏻‍💻 and [contributors](https://github.com/satnaing/astro-paper/graphs/contributors).
+## 🔥 Các Tính Năng Nổi Bật
+
+### 📰 1. Hệ thống Blog
+*   **Hỗ trợ Markdown & MDX**: Soạn thảo bài viết linh hoạt với định dạng Markdown tiêu chuẩn hoặc MDX (Components trong Markdown).
+*   **Tự động tạo ảnh Cover (Dynamic OG Image)**: Tự động sinh ảnh Open Graph cá nhân hoá cho từng bài viết để tối ưu chia sẻ mạng xã hội.
+*   **Hệ thống thẻ (Tags)**: Phân loại bài viết theo chủ đề dễ dàng.
+*   **Phân trang & Lưu trữ (Pagination & Archives)**: Quản lý số lượng lớn bài viết khoa học.
+*   **RSS Feed & Sitemap**: Tự động cập nhật Sitemap và cấp RSS cho các trình đọc tin tức.
+
+### 📚 2. Hệ thống Tài liệu Nhiều Cấp (Nextra-Style Docs)
+*   **Tự động sinh Menu từ thư mục**: Tự động quét cấu trúc thư mục lồng nhau trong `src/data/docs/` để tạo Sidebar điều hướng.
+*   **Menu lồng nhau (Multi-level menus)**: Hỗ trợ tạo thư mục lồng nhau không giới hạn cấp độ.
+*   **Cấu hình thư mục bằng `_meta.json`**:
+    *   Đặt tên hiển thị tùy chỉnh cho các thư mục trên Menu.
+    *   Tùy chỉnh thứ tự hiển thị (Ordering) của các chương/bài viết.
+    *   Ẩn các trang nháp (`hidden`).
+
+### 🔐 3. Trang Quản Trị Nội Dung Vân Tay (`/admin` - Cloud Git CMS)
+Một hệ thống quản lý nội dung (CMS) tự xây dựng tối giản nhưng vô cùng mạnh mẽ được nhúng trực tiếp tại route `/admin`:
+*   **Viết bài ở mọi nơi**: Hoạt động 100% phía máy khách (Client-side SPA). Bạn có thể viết bài từ điện thoại, máy tính bảng, máy tính công ty hay khách sạn mà không cần mở code.
+*   **Xác thực an toàn**: Sử dụng **GitHub Personal Access Token (PAT)** được lưu trữ cục bộ trong trình duyệt của bạn (`localStorage`). Tuyệt đối không lưu trữ hay gửi token qua máy chủ trung gian nào khác.
+*   **Xem trước trực quan (Live Preview)**: Chia đôi màn hình soạn thảo Markdown và xem trước giao diện HTML hiển thị chuẩn xác theo thời gian thực.
+*   **Quản lý Menu tự động**:
+    *   Cho phép chọn thư mục cha hoặc tạo nhanh thư mục Docs con mới trực tiếp từ CMS.
+    *   Tự động sinh và cập nhật file cấu hình `_meta.json` trên GitHub để đồng bộ thứ tự (`order`) và tiêu đề thư mục ngay khi bạn lưu hoặc xoá bài.
+*   **Tự động Deploy**: Khi bạn nhấn **Lưu Bài Viết** hoặc **Xoá bài**, CMS sẽ commit trực tiếp lên kho chứa GitHub, kích hoạt **GitHub Actions** tự động biên dịch và cập nhật trang web sau 1-2 phút.
+
+---
+
+## 🛠️ Hướng dẫn cài đặt & Chạy dưới local
+
+### 1. Yêu cầu hệ thống
+*   Đã cài đặt **Node.js** (Khuyên dùng v18 hoặc mới hơn).
+*   Công cụ quản lý gói **pnpm** hoặc **npm**.
+
+### 2. Khởi chạy dự án
+Chạy các lệnh sau trong thư mục dự án:
+
+```bash
+# Cài đặt các thư viện phụ thuộc
+npm install
+
+# Khởi chạy server phát triển local
+npm run dev
+```
+
+Truy cập trang web local tại địa chỉ `http://localhost:4321`.
+
+### 3. Biên dịch Production
+Để kiểm tra phiên bản build tối ưu hoá hoặc chuẩn bị deploy thủ công:
+
+```bash
+npm run build
+```
+Sản phẩm biên dịch tĩnh sẽ nằm trong thư mục `/dist`.
+
+---
+
+## 📂 Cấu Trúc Thư Mục Dự Án
+
+```bash
+/
+├── .github/workflows/
+│   └── deploy.yml            # Luồng GitHub Actions tự động deploy lên GitHub Pages
+├── public/                   # Thư mục chứa tài nguyên tĩnh (ảnh, favicon, pagefind index)
+├── src/
+│   ├── components/           # Các component tái sử dụng (Header, Footer, Sidebar, Card...)
+│   ├── data/
+│   │   ├── blog/             # Nơi lưu trữ các file Markdown bài viết Blog (.md)
+│   │   └── docs/             # Nơi lưu trữ tài liệu Docs chia theo thư mục và file _meta.json
+│   ├── layouts/              # Giao diện khung (Layout chung cho Blog và Docs)
+│   ├── pages/
+│   │   ├── admin.astro       # Trang quản trị nội dung CMS tại route /admin
+│   │   ├── index.astro       # Trang chủ website
+│   │   └── ...               # Các trang tĩnh khác (Search, Tags, RSS...)
+│   ├── styles/               # File cấu hình CSS (sử dụng TailwindCSS v4)
+│   └── utils/                # Các bộ tiện ích xử lý logic, quét file hệ thống sinh menu
+├── astro.config.ts           # Cấu hình dự án Astro
+└── package.json              # Khai báo thư viện và script chạy
+```
+
+---
+
+## 📝 Quy trình viết bài qua Trang Quản Trị (`/admin`)
+
+1. **Khởi tạo quyền**: Truy cập [GitHub Developer Settings](https://github.com/settings/tokens) tạo một **Personal Access Token (classic)** tick chọn quyền **`repo`**.
+2. **Đăng nhập**: Mở trang `https://tadev999.github.io/admin` (hoặc chạy dev local tại `/admin`), nhập đoạn token được tạo ở bước 1.
+3. **Soạn thảo**:
+    *   **Blog**: Nhập Tiêu đề, Mô tả, Tags (gõ và bấm Enter để tạo tag mới) và viết nội dung.
+    *   **Docs**: Chọn thư mục lưu trữ (hoặc tạo thư mục mới), nhập số thứ tự và viết nội dung.
+    *   **Commit Message**: Bạn có thể điền thông điệp commit hoặc để trống để CMS tự động sinh thông điệp mặc định.
+4. **Lưu & Xuất bản**: Bấm **Lưu Bài Viết**. Đợi 1-2 phút để GitHub Actions chạy build xong, bài viết sẽ hiển thị trên trang web chính thức của bạn!
+
+---
+
+## 📜 Giấy Phép & Tác Giả
+
+*   Giao diện gốc dựa trên dự án mã nguồn mở **AstroPaper**.
+*   Được tuỳ biến, tích hợp hệ thống **Docs lồng nhau** và **Cloud Git CMS** bởi **tadev999**.
+*   Giấy phép mã nguồn: **MIT License**.
