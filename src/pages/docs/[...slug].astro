@@ -10,6 +10,7 @@
  */
 import { getCollection, render } from "astro:content";
 import DocsLayout from "@/layouts/DocsLayout.astro";
+import ShareLinks from "@/components/ShareLinks.astro";
 import { DirectoryScanner } from "@/utils/content/directoryScanner";
 import { MetadataParser } from "@/utils/content/metadataParser";
 import { NavigationGenerator } from "@/utils/content/navigationGenerator";
@@ -166,7 +167,15 @@ const nextPage = currentIndex !== -1 && currentIndex < flatPages.length - 1 ? fl
   navigationTree={navigationTree}
   currentPath={currentPath}
 >
+  <div class="mb-6">
+    <ShareLinks title={pageTitle} showText={false} />
+  </div>
+
   <Content />
+
+  <div class="mt-12">
+    <ShareLinks title={pageTitle} />
+  </div>
 
   <!-- Prev / Next navigation -->
   <hr class="my-8 border-dashed" />

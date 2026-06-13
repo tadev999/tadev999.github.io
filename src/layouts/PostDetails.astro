@@ -107,6 +107,11 @@ const nextPost =
       >
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
+
+    <div class="my-4">
+      <ShareLinks title={title} showText={false} />
+    </div>
+
     <article
       id="article"
       class="app-prose mt-8 w-full prose-pre:bg-(--shiki-light-bg) dark:prose-pre:bg-(--shiki-dark-bg)"
@@ -125,7 +130,7 @@ const nextPost =
 
     <BackToTopButton />
 
-    <ShareLinks />
+    <ShareLinks title={title} />
 
     <hr class="my-6 border-dashed" />
 

@@ -31,6 +31,14 @@ Một hệ thống quản lý nội dung (CMS) tự xây dựng tối giản nh�
     *   Tự động sinh và cập nhật file cấu hình `_meta.json` trên GitHub để đồng bộ thứ tự (`order`) và tiêu đề thư mục ngay khi bạn lưu hoặc xoá bài.
 *   **Tự động Deploy**: Khi bạn nhấn **Lưu Bài Viết** hoặc **Xoá bài**, CMS sẽ commit trực tiếp lên kho chứa GitHub, kích hoạt **GitHub Actions** tự động biên dịch và cập nhật trang web sau 1-2 phút.
 
+### 📢 4. Tích hợp Chia sẻ Mạng Xã Hội (Social Sharing)
+*   **Hỗ trợ đa nền tảng**: Cho phép chia sẻ bài viết nhanh chóng lên các mạng xã hội phổ biến: Facebook, X (Twitter), Telegram, WhatsApp, Pinterest và gửi qua Email.
+*   **Trải nghiệm chia sẻ thông minh**:
+    *   Tự động gộp tiêu đề bài viết cùng đường dẫn, phân tách bằng dòng trống kép (`\n\n`) trên **X (Twitter)** và **WhatsApp** để bài đăng trông gọn gàng, tăng lượt tương tác.
+    *   Tự động mã hóa URL động theo bài viết thực tế để tránh lỗi định dạng ký tự đặc biệt.
+    *   Tương thích hoàn toàn với Open Graph cho Facebook tự động quét thông tin xem trước.
+*   **Vị trí hiển thị tiện lợi**: Nút chia sẻ xuất hiện ở cả **đầu** (dạng icon tinh gọn) và **cuối** (dạng đầy đủ) của mỗi bài viết (áp dụng cho cả Blog và Docs).
+
 ---
 
 ## 🛠️ Hướng dẫn cài đặt & Chạy dưới local
