@@ -4,7 +4,7 @@ export const SITE = {
   profile: "https://blog.greenolio.com/",
   desc: "Blog cá nhân về lập trình và cuộc sống - Chia sẻ kinh nghiệm, kiến thức và những suy ngẫm từ một lập trình viên.",
   title: "TaDev",
-  ogImage: "astropaper-og.jpg",
+  ogImage: "astropaper-og.png",
   lightAndDarkMode: true,
   postPerIndex: 4,
   postPerPage: 4,

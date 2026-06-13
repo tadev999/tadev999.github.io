@@ -167,8 +167,12 @@ const nextPage = currentIndex !== -1 && currentIndex < flatPages.length - 1 ? fl
   navigationTree={navigationTree}
   currentPath={currentPath}
 >
-  <div class="mb-6">
-    <ShareLinks title={pageTitle} showText={false} />
+  <h1 class="inline-block text-2xl font-bold text-accent sm:text-3xl">
+    {pageTitle}
+  </h1>
+
+  <div class="my-4">
+    <ShareLinks title={pageTitle} />
   </div>
 
   <Content />

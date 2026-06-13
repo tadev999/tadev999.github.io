@@ -258,3 +258,8 @@
   color: inherit !important;
 }
 
+/* Hide the first H1 in Docs because we render it dynamically in Astro template */
+.docs-layout article.app-prose > h1:first-child,
+.docs-layout article.app-prose > h1:first-of-type {
+  display: none;
+}
