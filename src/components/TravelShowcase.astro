@@ -1,0 +1,415 @@
+---
+/**
+ * TravelShowcase Component
+ * Displays a premium interactive travel map list grouped by country,
+ * using responsive grid tabs, polaroid card animations, and a fullscreen photo slideshow lightbox.
+ *
+ * AUTO-SCAN: Cities with a `folder` property automatically load all images
+ * from public/travel/<folder>/ at build time. Just drop photos into the folder
+ * and rebuild — no code changes needed.
+ */
+import { readdirSync, existsSync } from "fs";
+import { join } from "path";
+import TRAVEL_CONFIG_RAW from "@/data/travel.json";
+
+interface CityConfig {
+  name: string;
+  desc: string;
+  folder?: string;       // auto-scan from public/travel/<folder>/
+  cover?: string;        // manual cover override (used if no folder)
+  photos?: string[];     // manual photos (used if no folder)
+}
+
+interface CountryConfig {
+  country: string;
+  code: string;
+  flag: string;
+  color?: string;
+  folder?: string;
+  cities: CityConfig[];
+}
+
+interface City {
+  name: string;
+  desc: string;
+  cover: string;
+  photos: string[];
+}
+
+interface CountryData {
+  country: string;
+  code: string;
+  flag: string;
+  color?: string;
+  folder?: string;
+  cities: City[];
+}
+
+/** Scan all image files inside public/travel/<countryFolder>/<cityFolder>/ sorted naturally */
+function scanCityPhotos(countryFolder: string, cityFolder: string): string[] {
+  const dirPath = join(process.cwd(), "public", "travel", countryFolder, cityFolder);
+  if (!existsSync(dirPath)) return [];
+  return readdirSync(dirPath)
+    .filter(f => /\.(jpe?g|png|webp|gif|avif)$/i.test(f))
+    .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: "base" }))
+    .map(f => `/travel/${countryFolder}/${cityFolder}/${f}`);
+}
+
+const TRAVEL_CONFIG = TRAVEL_CONFIG_RAW as CountryConfig[];
+
+/** Resolve a city config into a full City with photos populated */
+function resolveCity(city: CityConfig, countryFolder?: string): City {
+  if (city.folder && countryFolder) {
+    const scanned = scanCityPhotos(countryFolder, city.folder);
+    // If folder has photos, use them; otherwise fall back to manual photos
+    if (scanned.length > 0) {
+      return { name: city.name, desc: city.desc, cover: scanned[0], photos: scanned };
+    }
+  }
+  // Fallback: manual cover/photos
+  return {
+    name: city.name,
+    desc: city.desc,
+    cover: city.cover ?? "",
+    photos: city.photos ?? [],
+  };
+}
+
+const TRAVEL_DATA: CountryData[] = TRAVEL_CONFIG.map(country => ({
+  ...country,
+  cities: country.cities.map(city => resolveCity(city, country.folder)),
+}));
+
+const totalCities = TRAVEL_DATA.reduce((acc, curr) => acc + curr.cities.length, 0);
+
+const colorThemeMap: Record<string, { active: string; inactive: string }> = {
+  red: {
+    active: "bg-red-600 dark:bg-red-700 text-white border-red-600 dark:border-red-700 shadow-md shadow-red-500/20",
+    inactive: "bg-red-500/5 dark:bg-red-500/10 text-red-600 dark:text-red-400 border-red-300/40 dark:border-red-500/20 hover:bg-red-500/15 hover:border-red-500/40"
+  },
+  emerald: {
+    active: "bg-emerald-600 dark:bg-emerald-700 text-white border-emerald-600 dark:border-emerald-700 shadow-md shadow-emerald-500/20",
+    inactive: "bg-emerald-500/5 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-300/40 dark:border-emerald-500/20 hover:bg-emerald-500/15 hover:border-emerald-500/40"
+  },
+  indigo: {
+    active: "bg-indigo-600 dark:bg-indigo-700 text-white border-indigo-600 dark:border-indigo-700 shadow-md shadow-indigo-500/20",
+    inactive: "bg-indigo-500/5 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-300/40 dark:border-indigo-500/20 hover:bg-indigo-500/15 hover:border-indigo-500/40"
+  },
+  amber: {
+    active: "bg-amber-600 dark:bg-amber-700 text-white border-amber-600 dark:border-amber-700 shadow-md shadow-amber-500/20",
+    inactive: "bg-amber-500/5 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-300/40 dark:border-amber-500/20 hover:bg-amber-500/15 hover:border-amber-500/40"
+  },
+  blue: {
+    active: "bg-blue-600 dark:bg-blue-700 text-white border-blue-600 dark:border-blue-700 shadow-md shadow-blue-500/20",
+    inactive: "bg-blue-500/5 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-300/40 dark:border-blue-500/20 hover:bg-blue-500/15 hover:border-blue-500/40"
+  },
+  purple: {
+    active: "bg-purple-600 dark:bg-purple-700 text-white border-purple-600 dark:border-purple-700 shadow-md shadow-purple-500/20",
+    inactive: "bg-purple-500/5 dark:bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-300/40 dark:border-purple-500/20 hover:bg-purple-500/15 hover:border-purple-500/40"
+  },
+  rose: {
+    active: "bg-rose-600 dark:bg-rose-700 text-white border-rose-600 dark:border-rose-700 shadow-md shadow-rose-500/20",
+    inactive: "bg-rose-500/5 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-300/40 dark:border-rose-500/20 hover:bg-rose-500/15 hover:border-rose-500/40"
+  },
+  teal: {
+    active: "bg-teal-600 dark:bg-teal-700 text-white border-teal-600 dark:border-teal-700 shadow-md shadow-teal-500/20",
+    inactive: "bg-teal-500/5 dark:bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-300/40 dark:border-teal-500/20 hover:bg-teal-500/15 hover:border-teal-500/40"
+  }
+};
+---
+
+<div class="travel-showcase mt-4 mb-12 not-prose">
+  <!-- Stats Header -->
+  <div class="text-center mb-8">
+    <p class="text-sm md:text-base font-medium text-foreground/60 tracking-wider uppercase">
+      {TRAVEL_DATA.length} Quốc gia • {totalCities} Địa điểm • Những góc ảnh & Kỷ niệm đẹp
+    </p>
+  </div>
+
+  <!-- Country Tabs -->
+  <div class="flex justify-center gap-2 mb-8 flex-wrap">
+    {TRAVEL_DATA.map((item, index) => {
+      const color = item.color || "blue";
+      const theme = colorThemeMap[color] || colorThemeMap.blue;
+      return (
+        <button
+          class={`tab-btn px-4 py-2 rounded-full border text-base font-semibold transition-all duration-200 cursor-pointer flex items-center gap-2 ${
+            index === 0 ? theme.active : theme.inactive
+          }`}
+          data-target={item.code}
+          data-active-classes={theme.active}
+          data-inactive-classes={theme.inactive}
+        >
+          <span>{item.flag}</span>
+          <span>{item.country}</span>
+          <span class="text-sm bg-muted/20 dark:bg-foreground/10 px-2 py-0.5 rounded-full">
+            {item.cities.length}
+          </span>
+        </button>
+      );
+    })}
+  </div>
+
+  <!-- Cities Grid Container -->
+  <div class="cities-container">
+    {TRAVEL_DATA.map((country, countryIdx) => (
+      <div
+        id={`grid-${country.code}`}
+        class={`city-grid grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 transition-opacity duration-300 ${
+          countryIdx === 0 ? "block" : "hidden"
+        }`}
+      >
+        {country.cities.map((city) => (
+          <div
+            class="city-card group relative flex flex-col overflow-hidden rounded-xl border border-border bg-muted/40 cursor-pointer transition-all duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-accent/5"
+            data-city-name={city.name}
+            data-photos={JSON.stringify(city.photos)}
+          >
+            <!-- Image Frame -->
+            <div class="aspect-4/3 overflow-hidden relative bg-muted">
+              <img
+                src={city.cover}
+                alt={city.name}
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">
+                <span class="text-sm font-semibold text-white bg-accent px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md">
+                  📸 Xem album ({city.photos.length})
+                </span>
+              </div>
+            </div>
+            
+            <!-- Description Area (Polaroid style) -->
+            <div class="p-4 flex-1 flex flex-col justify-between border-t border-border bg-background/50 backdrop-blur-sm">
+              <div>
+                <h3 class="text-xl font-bold text-foreground group-hover:text-accent transition-colors font-app mb-1.5">
+                  {city.name}
+                </h3>
+                <p class="text-sm text-foreground/60 leading-relaxed line-clamp-3">
+                  {city.desc}
+                </p>
+              </div>
+              
+              <div class="mt-3 flex items-center justify-between text-xs text-foreground/45 uppercase tracking-wider font-semibold">
+                <span>{country.country}</span>
+                <span>{city.photos.length} hình ảnh</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+
+  <!-- Image Lightbox Modal -->
+  <div
+    id="travel-lightbox"
+    class="fixed inset-0 z-50 hidden bg-black/95 backdrop-blur-md items-center justify-center p-4"
+    role="dialog"
+    aria-modal="true"
+  >
+    <!-- Close Button -->
+    <button
+      id="lightbox-close"
+      class="absolute top-4 right-4 z-50 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full cursor-pointer transition-colors duration-150"
+      aria-label="Đóng"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+      </svg>
+    </button>
+
+    <!-- Prev Button -->
+    <button
+      id="lightbox-prev"
+      class="absolute left-4 z-40 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full cursor-pointer transition-colors duration-150"
+      aria-label="Ảnh trước"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6" />
+      </svg>
+    </button>
+
+    <!-- Next Button -->
+    <button
+      id="lightbox-next"
+      class="absolute right-4 z-40 text-white/70 hover:text-white bg-white/10 hover:bg-white/20 p-3 rounded-full cursor-pointer transition-colors duration-150"
+      aria-label="Ảnh tiếp"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6" />
+      </svg>
+    </button>
+
+    <!-- Main Lightbox Display -->
+    <div class="relative max-w-4xl w-full max-h-[80vh] flex flex-col items-center justify-center">
+      <img
+        id="lightbox-img"
+        src=""
+        alt=""
+        class="max-w-full max-h-[75vh] object-contain rounded-lg shadow-2xl transition-all duration-300"
+      />
+      
+      <!-- Overlay text details -->
+      <div class="mt-4 text-center text-white/90">
+        <h4 id="lightbox-title" class="text-xl font-bold font-app"></h4>
+        <p id="lightbox-counter" class="text-sm text-white/50 mt-1"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function initTravelShowcase() {
+    const tabs = document.querySelectorAll(".tab-btn");
+    const grids = document.querySelectorAll(".city-grid");
+    
+    // Tab switching logic
+    tabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        const target = tab.getAttribute("data-target");
+        
+        tabs.forEach(t => {
+          const code = t.getAttribute("data-target");
+          const activeClassesStr = t.getAttribute("data-active-classes") || "";
+          const inactiveClassesStr = t.getAttribute("data-inactive-classes") || "";
+          const activeClasses = activeClassesStr.split(" ").filter(Boolean);
+          const inactiveClasses = inactiveClassesStr.split(" ").filter(Boolean);
+          
+          if (code === target) {
+            t.classList.remove(...inactiveClasses);
+            t.classList.add(...activeClasses);
+          } else {
+            t.classList.remove(...activeClasses);
+            t.classList.add(...inactiveClasses);
+          }
+        });
+        
+        // Toggle city grids visibility
+        grids.forEach(grid => {
+          if (grid.id === `grid-${target}`) {
+            grid.classList.remove("hidden");
+            grid.classList.add("block");
+          } else {
+            grid.classList.remove("block");
+            grid.classList.add("hidden");
+          }
+        });
+      });
+    });
+
+    // Lightbox gallery modal logic
+    const cards = document.querySelectorAll(".city-card");
+    const lightbox = document.getElementById("travel-lightbox");
+    const lightboxImg = document.getElementById("lightbox-img") as HTMLImageElement;
+    const lightboxTitle = document.getElementById("lightbox-title");
+    const lightboxCounter = document.getElementById("lightbox-counter");
+    const closeBtn = document.getElementById("lightbox-close");
+    const prevBtn = document.getElementById("lightbox-prev");
+    const nextBtn = document.getElementById("lightbox-next");
+
+    if (!lightbox || !lightboxImg || !lightboxTitle || !lightboxCounter) return;
+
+    let currentPhotos: string[] = [];
+    let currentIndex = 0;
+    let currentCityName = "";
+
+    function openLightbox(cityName: string, photos: string[]) {
+      if (!photos || photos.length === 0) return;
+      currentCityName = cityName;
+      currentPhotos = photos;
+      currentIndex = 0;
+      updateLightboxContent();
+      
+      lightbox!.classList.remove("hidden");
+      lightbox!.classList.add("flex");
+      document.body.style.overflow = "hidden"; // Prevent background scroll
+    }
+
+    function closeLightbox() {
+      lightbox!.classList.remove("flex");
+      lightbox!.classList.add("hidden");
+      document.body.style.overflow = ""; // Enable back scroll
+      lightboxImg!.src = "";
+    }
+
+    function updateLightboxContent() {
+      if (currentPhotos.length === 0) return;
+      lightboxImg!.style.opacity = "0.2";
+      setTimeout(() => {
+        lightboxImg!.src = currentPhotos[currentIndex];
+        lightboxImg!.alt = `${currentCityName} - Ảnh ${currentIndex + 1}`;
+        if (lightboxTitle) lightboxTitle.innerText = currentCityName;
+        if (lightboxCounter) lightboxCounter.innerText = `Ảnh ${currentIndex + 1} / ${currentPhotos.length}`;
+        lightboxImg!.style.opacity = "1";
+      }, 100);
+
+      // Hide navigation arrows if there is only 1 photo
+      if (currentPhotos.length <= 1) {
+        if (prevBtn) prevBtn.style.display = "none";
+        if (nextBtn) nextBtn.style.display = "none";
+      } else {
+        if (prevBtn) prevBtn.style.display = "block";
+        if (nextBtn) nextBtn.style.display = "block";
+      }
+    }
+
+    function showNext() {
+      if (currentPhotos.length <= 1) return;
+      currentIndex = (currentIndex + 1) % currentPhotos.length;
+      updateLightboxContent();
+    }
+
+    function showPrev() {
+      if (currentPhotos.length <= 1) return;
+      currentIndex = (currentIndex - 1 + currentPhotos.length) % currentPhotos.length;
+      updateLightboxContent();
+    }
+
+    // Attach click handlers to city cards
+    cards.forEach(card => {
+      card.addEventListener("click", () => {
+        const cityName = card.getAttribute("data-city-name") || "";
+        const photosRaw = card.getAttribute("data-photos") || "[]";
+        try {
+          const photos = JSON.parse(photosRaw);
+          openLightbox(cityName, photos);
+        } catch (e) {
+          console.error("Failed to parse photos for city", cityName, e);
+        }
+      });
+    });
+
+    // Close on backdrop or buttons
+    closeBtn?.addEventListener("click", closeLightbox);
+    prevBtn?.addEventListener("click", (e) => { e.stopPropagation(); showPrev(); });
+    nextBtn?.addEventListener("click", (e) => { e.stopPropagation(); showNext(); });
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightbox || e.target === lightboxImg?.parentNode) {
+        closeLightbox();
+      }
+    });
+
+    // Keyboard controls
+    document.addEventListener("keydown", (e) => {
+      if (lightbox && !lightbox.classList.contains("hidden")) {
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowRight") showNext();
+        if (e.key === "ArrowLeft") showPrev();
+      }
+    });
+  }
+
+  // Setup on initial load & Astro page swap (SPA Transitions)
+  initTravelShowcase();
+  document.addEventListener("astro:after-swap", initTravelShowcase);
+</script>
+
+<style>
+  /* Extra styling for aspect ratio and transition effects */
+  .aspect-4/3 {
+    aspect-ratio: 4 / 3;
+  }
+</style>

@@ -1,0 +1,155 @@
+[
+  {
+    "country": "Việt Nam",
+    "code": "VN",
+    "flag": "🇻🇳",
+    "color": "red",
+    "folder": "vietnam",
+    "cities": [
+      {
+        "name": "Hà Nội",
+        "desc": "Thủ đô ngàn năm văn hiến, bình yên bên Hồ Gươm và những góc phố cổ.",
+        "cover": "https://images.unsplash.com/photo-1509060464153-44667396260f?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1509060464153-44667396260f?w=1200&q=80",
+          "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Sài Gòn",
+        "desc": "Thành phố sôi động, năng động, rực rỡ ánh đèn đêm hoa lệ.",
+        "cover": "https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?w=1200&q=80",
+          "https://images.unsplash.com/photo-1508962914676-134849a727f0?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Đà Nẵng",
+        "desc": "Thành phố đáng sống bên sông Hàn thơ mộng và những bãi biển xanh cát trắng.",
+        "cover": "https://images.unsplash.com/photo-1559592443-7f87a84cd972?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1559592443-7f87a84cd972?w=1200&q=80",
+          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Huế",
+        "desc": "Cố đô trầm mặc, mang đậm dấu ấn lịch sử triều Nguyễn và dòng sông Hương lững lờ.",
+        "cover": "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Ninh Bình",
+        "desc": "Tuyệt tác thiên nhiên Tràng An - Tam Cốc với núi non trùng điệp ẩn hiện.",
+        "cover": "https://images.unsplash.com/photo-1528127269322-539801943592?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1528127269322-539801943592?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Quy Nhơn",
+        "desc": "Bãi biển Eo Gió hoang sơ lộng gió và làn nước xanh mát rượi thanh bình.",
+        "cover": "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1533105079780-92b9be482077?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Bến Tre",
+        "desc": "Xứ dừa hiền hòa bên những dòng sông Mekong đỏ nặng phù sa.",
+        "cover": "https://images.unsplash.com/photo-1604881991720-f91add269fed?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1604881991720-f91add269fed?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Đồng Tháp",
+        "desc": "Thủ phủ sen hồng bát ngát và rừng Tràm Chim ngập nước rộn tiếng chim ca.",
+        "cover": "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Bắc Ninh",
+        "desc": "Quê hương của những làn điệu Dân ca Quan họ trữ tình và đình chùa cổ kính.",
+        "cover": "https://images.unsplash.com/photo-1598977123418-45f04b615e0e?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1598977123418-45f04b615e0e?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Thái Nguyên",
+        "desc": "Vùng đồi chè Tân Cương xanh ngút ngàn, thơ mộng trải dài.",
+        "cover": "https://images.unsplash.com/photo-1527489377706-5bf97e608852?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1527489377706-5bf97e608852?w=1200&q=80"
+        ]
+      },
+      {
+        "name": "Đồng Nai",
+        "desc": "Thung lũng đá ngọc Trị An thanh bình cùng dòng sông thơ mộng hiền hòa.",
+        "cover": "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=800&q=80",
+        "photos": [
+          "https://images.unsplash.com/photo-1447752875215-b2761acb3c5d?w=1200&q=80"
+        ]
+      }
+    ]
+  },
+  {
+    "country": "Italia",
+    "code": "IT",
+    "flag": "🇮🇹",
+    "color": "emerald",
+    "folder": "italia",
+    "cities": [
+      {
+        "name": "Rome (Roma) · 2011",
+        "desc": "Bảo tàng mở của thế giới cổ đại với đấu trường Colosseum hùng vĩ.",
+        "folder": "rome"
+      },
+      {
+        "name": "Milan · 2010/2011/2012",
+        "desc": "Kinh đô thời trang lộng lẫy và nhà thờ Gothic Duomo tráng lệ nguy nga.",
+        "folder": "milan"
+      },
+      {
+        "name": "Bergamo · 2011/2012",
+        "desc": "Thành phố trung cổ Città Alta xinh đẹp nép mình bên dãy Alps thơ mộng.",
+        "folder": "bergamo"
+      },
+      {
+        "name": "Lago Maggiore · 2010",
+        "desc": "Hồ nước thơ mộng vùng Bắc Ý với những hòn đảo Borromean xinh xắn lãng mạn.",
+        "folder": "maggiore"
+      },
+      {
+        "name": "Venice (Venezia) · 2011",
+        "desc": "Thành phố nổi trên mặt nước huyền ảo — những con kênh, chiếc gondola và kiến trúc cổ kính thách thức thời gian.",
+        "folder": "venice"
+      }
+    ]
+  },
+  {
+    "country": "Nhật Bản",
+    "code": "JP",
+    "flag": "🇯🇵",
+    "color": "indigo",
+    "folder": "japan",
+    "cities": [
+      {
+        "name": "Tokyo · 2014/2025",
+        "desc": "Sự kết hợp hoàn hảo giữa công nghệ tương lai hiện đại và đền đài cổ kính trầm mặc.",
+        "folder": "tokyo"
+      },
+      {
+        "name": "Yokohama · 2025",
+        "desc": "Thành phố cảng hiện đại lộng gió với những vòng quay khổng lồ rực rỡ sắc màu về đêm.",
+        "folder": "yokohama"
+      }
+    ]
+  }
+]

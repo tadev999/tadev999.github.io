@@ -1,0 +1,232 @@
+---
+layout: ../layouts/AboutLayout.astro
+title: "About"
+---
+
+import TravelShowcase from "@/components/TravelShowcase.astro";
+import TabUXHints from "@/components/TabUXHints.astro";
+
+<div class="profile-header text-center mt-4 mb-3">
+  <div class="relative inline-block">
+    <img 
+      src="/logo.png" 
+      alt="TaDev - Ta Duong Ngoc" 
+      class="w-36 h-36 rounded-full object-cover mx-auto shadow-lg border-4 border-accent transition-transform duration-300 hover:scale-105"
+    />
+  </div>
+  <h2 class="text-2xl font-bold mt-2 mb-1 text-foreground font-app">Tạ Dương Ngọc (TaDev)</h2>
+  <p class="text-sm text-foreground/60 italic font-medium">Làm chồng, làm cha, làm lập trình viên, quản lý dự án chuyên nghiệp.</p>
+</div>
+
+<div class="about-tabs-container mb-6 not-prose">
+  <div class="flex border-b border-border mb-6 overflow-x-auto scrollbar-none">
+    <button class="about-tab-btn active px-4 py-3 text-base font-semibold border-b-2 border-accent text-accent cursor-pointer transition-colors duration-150 flex items-center gap-1.5 whitespace-nowrap" data-tab="experience">
+      💼 Chuyên môn
+    </button>
+    <button class="about-tab-btn px-4 py-3 text-base font-semibold border-b-2 border-transparent text-foreground/60 hover:text-foreground hover:border-border cursor-pointer transition-colors duration-150 flex items-center gap-1.5 whitespace-nowrap" data-tab="travel">
+      ✈️ Trải nghiệm
+    </button>
+    <button class="about-tab-btn px-4 py-3 text-base font-semibold border-b-2 border-transparent text-foreground/60 hover:text-foreground hover:border-border cursor-pointer transition-colors duration-150 flex items-center gap-1.5 whitespace-nowrap" data-tab="education">
+      🎓 Học tập
+    </button>
+    <button class="about-tab-btn px-4 py-3 text-base font-semibold border-b-2 border-transparent text-foreground/60 hover:text-foreground hover:border-border cursor-pointer transition-colors duration-150 flex items-center gap-1.5 whitespace-nowrap" data-tab="about-blog">
+      📖 Về blog
+    </button>
+  </div>
+
+  <div id="tab-experience" class="about-tab-content">
+    <h4 class="text-sm font-bold text-foreground/80 mb-6 uppercase tracking-wider">Lịch sử sự nghiệp</h4>
+    <div class="relative border-l border-border pl-6 ml-3 space-y-8 py-2 mb-8 pb-6 border-b border-border">
+      <div class="relative">
+        <div class="absolute -left-[31px] top-1 bg-accent size-4 rounded-full border-4 border-background ring-4 ring-accent/15"></div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-sm font-bold text-accent bg-accent/10 px-2 py-0.5 rounded">07/2022 – Hiện tại</span>
+          <span class="text-base font-semibold text-foreground/75">Delivery Manager / PL / SM</span>
+        </div>
+        <h4 class="text-lg font-bold text-foreground mb-1">Dự án Finance App (iOS & Android)</h4>
+        <p class="text-sm text-foreground/60 leading-relaxed">Quản lý 4 Scrum Teams. Xây dựng Clean Architecture (VIPER cho iOS, MVVM-CA cho Android). Dẫn dắt kỹ thuật và tối ưu quy trình code review. <br/><strong class="text-xs uppercase text-accent/80 font-bold">Swift 5, Kotlin, GitLab, JIRA</strong></p>
+      </div>
+ 
+      <div class="relative">
+        <div class="absolute -left-[31px] top-1 bg-foreground/30 size-4 rounded-full border-4 border-background"></div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-sm font-bold text-foreground/60 bg-muted px-2 py-0.5 rounded">05/2020 – 06/2022</span>
+          <span class="text-base font-semibold text-foreground/75">Project Leader</span>
+        </div>
+        <h4 class="text-lg font-bold text-foreground mb-1">Dự án Finance iOS App</h4>
+        <p class="text-sm text-foreground/60 leading-relaxed">Quản lý đội ngũ phát triển và trực tiếp tham gia lập trình ứng dụng tài chính trên nền tảng iOS. <br/><strong class="text-xs uppercase text-accent/80 font-bold">Objective-C, Xcode, GitLab, JIRA</strong></p>
+      </div>
+ 
+      <div class="relative">
+        <div class="absolute -left-[31px] top-1 bg-foreground/30 size-4 rounded-full border-4 border-background"></div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-sm font-bold text-foreground/60 bg-muted px-2 py-0.5 rounded">08/2017 – 05/2020</span>
+          <span class="text-base font-semibold text-foreground/75">Delivery Manager / PM / PL</span>
+        </div>
+        <h4 class="text-lg font-bold text-foreground mb-1">Dự án Lifestyle iOS App</h4>
+        <p class="text-sm text-foreground/60 leading-relaxed">Quản lý team và phát triển ứng dụng phong cách sống hỗ trợ người dùng tìm kiếm thông tin hàng ngày (lịch trình, thời tiết, giao thông...). <br/><strong class="text-xs uppercase text-accent/80 font-bold">Swift 2.3 → 5, Xcode 8 → 11</strong></p>
+      </div>
+ 
+      <div class="relative">
+        <div class="absolute -left-[31px] top-1 bg-foreground/30 size-4 rounded-full border-4 border-background"></div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-sm font-bold text-foreground/60 bg-muted px-2 py-0.5 rounded">01/2016 – 04/2017</span>
+          <span class="text-base font-semibold text-foreground/75">Project Manager / Project Leader</span>
+        </div>
+        <h4 class="text-lg font-bold text-foreground mb-1">Dự án iC****** iOS App</h4>
+        <p class="text-sm text-foreground/60 leading-relaxed">Quản lý dự án, thiết kế và phát triển ứng dụng phong cách sống cho hệ điều hành iOS. <br/><strong class="text-xs uppercase text-accent/80 font-bold">Objective-C, Xcode</strong></p>
+      </div>
+ 
+      <div class="relative">
+        <div class="absolute -left-[31px] top-1 bg-foreground/30 size-4 rounded-full border-4 border-background"></div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-sm font-bold text-foreground/60 bg-muted px-2 py-0.5 rounded">2015 – 2016</span>
+          <span class="text-base font-semibold text-foreground/75">Project Leader</span>
+        </div>
+        <h4 class="text-lg font-bold text-foreground mb-1">Dự án Healthcare App (iOS & Android)</h4>
+        <p class="text-sm text-foreground/60 leading-relaxed">Phát triển ứng dụng chăm sóc sức khỏe theo dõi thông tin thai kỳ. <br/><strong class="text-xs uppercase text-accent/80 font-bold">Objective-C, Java, Android Studio</strong></p>
+      </div>
+ 
+      <div class="relative">
+        <div class="absolute -left-[31px] top-1 bg-foreground/30 size-4 rounded-full border-4 border-background"></div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-sm font-bold text-foreground/60 bg-muted px-2 py-0.5 rounded">2011 – 2015</span>
+          <span class="text-base font-semibold text-foreground/75">Team Leader / Software Engineer</span>
+        </div>
+        <h4 class="text-lg font-bold text-foreground mb-1">Các dự án Viễn thông & Tài chính</h4>
+        <p class="text-sm text-foreground/60 leading-relaxed">Thiết kế phần mềm GSM BTS, hệ thống trung gian Middleware và hệ thống tài chính ngân hàng. <br/><strong class="text-xs uppercase text-accent/80 font-bold">C/C++, Java, Oracle PL-SQL, Shell Scripting</strong></p>
+      </div>
+ 
+      <div class="relative">
+        <div class="absolute -left-[31px] top-1 bg-foreground/30 size-4 rounded-full border-4 border-background"></div>
+        <div class="flex items-center gap-2 mb-1.5">
+          <span class="text-sm font-bold text-foreground/60 bg-muted px-2 py-0.5 rounded">2007 – 2011</span>
+          <span class="text-base font-semibold text-foreground/75">Software Engineer</span>
+        </div>
+        <h4 class="text-lg font-bold text-foreground mb-1">Hệ thống Y tế & Sàn chứng khoán</h4>
+        <p class="text-sm text-foreground/60 leading-relaxed">Phát triển phần mềm hệ thống y tế và hệ thống xử lý giao dịch chứng khoán. <br/><strong class="text-xs uppercase text-accent/80 font-bold">C/C++, COBOL, Qt, MFC</strong></p>
+      </div>
+    </div>
+
+    <div class="space-y-6">
+      <div>
+        <h4 class="text-sm font-bold text-foreground/80 mb-2.5 uppercase tracking-wider">Quản lý dự án & Quy trình</h4>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">Team Organization & Leadership (14+ năm)</span>
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">Agile / Scrum Methodology</span>
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">Risk Management</span>
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">Project Planning & Tracking</span>
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">Stakeholder Communication</span>
+        </div>
+      </div>
+ 
+      <div>
+        <h4 class="text-sm font-bold text-foreground/80 mb-2.5 uppercase tracking-wider">Kỹ thuật & Kiến trúc</h4>
+        <div class="flex flex-wrap gap-2">
+          <span class="text-sm bg-accent/10 border border-accent/20 px-3 py-1.5 rounded-lg text-accent font-semibold">Mobile iOS (Swift, Objective-C)</span>
+          <span class="text-sm bg-accent/10 border border-accent/20 px-3 py-1.5 rounded-lg text-accent font-semibold">Android (Kotlin, Java)</span>
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">Clean Architecture (VIPER, MVVM-CA)</span>
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">Code Review & Coding Rules</span>
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">Git / CI-CD Pipelines</span>
+          <span class="text-sm bg-muted border border-border px-3 py-1.5 rounded-lg text-foreground/80 font-medium">C/C++, PL-SQL, Shell Scripting</span>
+        </div>
+      </div>
+ 
+      <div>
+        <h4 class="text-sm font-bold text-foreground/80 mb-2.5 uppercase tracking-wider">Ngôn ngữ</h4>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="p-3 bg-muted/40 rounded-lg border border-border text-center">
+            <span class="text-base font-bold text-foreground block mb-0.5">Tiếng Việt</span>
+            <span class="text-xs text-foreground/60 uppercase font-semibold">Bản xứ</span>
+          </div>
+          <div class="p-3 bg-muted/40 rounded-lg border border-border text-center">
+            <span class="text-base font-bold text-foreground block mb-0.5">Tiếng Anh</span>
+            <span class="text-xs text-foreground/60 uppercase font-semibold">Trung cấp</span>
+          </div>
+          <div class="p-3 bg-muted/40 rounded-lg border border-border text-center">
+            <span class="text-base font-bold text-foreground block mb-0.5">Tiếng Nhật</span>
+            <span class="text-xs text-foreground/60 uppercase font-semibold">Sơ cấp</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    </div>
+
+  <div id="tab-travel" class="about-tab-content hidden">
+    <TravelShowcase />
+  </div>
+
+  <div id="tab-education" class="about-tab-content hidden">
+    <div class="space-y-4">
+      <div class="p-4 bg-muted/30 border border-border rounded-xl flex gap-4">
+        <span class="text-2xl mt-1">🎓</span>
+        <div>
+          <h4 class="font-bold text-foreground mb-0.5">Cử nhân Kỹ thuật Điện tử & Truyền thông</h4>
+          <p class="text-xs text-foreground/60 font-medium">Đại học Quốc gia Việt Nam (VNU) | 2003 - 2007</p>
+        </div>
+      </div>
+
+      <div class="p-4 bg-muted/30 border border-border rounded-xl flex gap-4">
+        <span class="text-2xl mt-1">⚡</span>
+        <div>
+          <h4 class="font-bold text-foreground mb-0.5">Đánh thức sức mạnh bên trong bạn</h4>
+          <p class="text-xs text-foreground/60 font-medium">Khóa học phát triển bản thân | Năm hoàn thành: 2024</p>
+        </div>
+      </div>
+
+      <div class="p-4 bg-muted/30 border border-border rounded-xl flex gap-4">
+        <span class="text-2xl mt-1">🎖️</span>
+        <div>
+          <h4 class="font-bold text-foreground mb-0.5">Professional Scrum Master I (PSM1)</h4>
+          <p class="text-xs text-foreground/60 font-medium">Chứng chỉ Scrum toàn cầu | Năm cấp: 2023</p>
+        </div>
+      </div>
+
+      <div class="p-4 bg-muted/30 border border-border rounded-xl flex gap-4">
+        <span class="text-2xl mt-1">💼</span>
+        <div>
+          <h4 class="font-bold text-foreground mb-0.5">Leadership Management Course</h4>
+          <p class="text-xs text-foreground/60 font-medium">Khóa đào tạo Quản lý Lãnh đạo cấp cao | Năm hoàn thành: 2017</p>
+        </div>
+      </div>
+
+      <div class="p-4 bg-muted/30 border border-border rounded-xl flex gap-4">
+        <span class="text-2xl mt-1">📊</span>
+        <div>
+          <h4 class="font-bold text-foreground mb-0.5">Project Management Certification</h4>
+          <p class="text-xs text-foreground/60 font-medium">Khóa học Quản trị dự án chuẩn chuyên nghiệp | Năm hoàn thành: 2013</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="tab-about-blog" class="about-tab-content hidden">
+    <div class="space-y-6">
+      <div class="border-l-4 border-accent bg-muted/30 p-6 rounded-r-xl">
+        <h3 class="text-lg font-bold text-foreground mb-2 flex items-center gap-2 font-app">
+          📖 Về blog này
+        </h3>
+        <p class="text-sm text-foreground/75 leading-relaxed">
+          Với hơn <strong>17 năm kinh nghiệm</strong> lập trình và quản lý dự án, tôi đã đi qua nhiều cung bậc cảm xúc, trải qua đủ thể loại dự án từ thành công cho tới những lúc đầy thử thách.
+        </p>
+        <p class="text-sm text-foreground/75 leading-relaxed mt-2.5">
+          Đây là góc nhỏ của tôi — nơi tôi viết cho mình để ghi lại những suy ngẫm cá nhân, và cũng dành cho bạn, nếu chúng ta có duyên tìm thấy nhau trên hành trình này.
+        </p>
+      </div>
+
+      <div class="border border-border bg-background p-6 rounded-xl text-center">
+        <h3 class="text-lg font-bold text-foreground mb-2 font-app flex items-center justify-center gap-1.5">
+          🌐 Growing Network
+        </h3>
+        <p class="text-sm text-foreground/70 leading-relaxed max-w-lg mx-auto mb-4">
+          Đã ghé vào đây rồi thì chắc chắn là duyên lành. Nếu bạn thấy những điều tôi chia sẻ hữu ích hoặc đơn giản là muốn trao đổi kinh nghiệm công việc hay quan điểm cuộc sống, hãy thoải mái kết nối nhé!
+        </p>
+        <p class="text-xs text-foreground/50 italic font-medium">
+          Nếu thấy có ích cho bạn và mọi người, đừng ngại ngần chia sẻ trang này nhé!
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<TabUXHints />

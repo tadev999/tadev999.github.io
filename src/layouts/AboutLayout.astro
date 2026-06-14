@@ -22,3 +22,38 @@ const { frontmatter } = Astro.props;
   </main>
   <Footer />
 </Layout>
+
+<script is:inline>
+  function initAboutTabs() {
+    const tabBtns = document.querySelectorAll(".about-tab-btn");
+    const tabContents = document.querySelectorAll(".about-tab-content");
+
+    if (tabBtns.length === 0) return;
+
+    tabBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const tabTarget = btn.getAttribute("data-tab");
+
+        tabBtns.forEach(b => {
+          b.classList.remove("active", "border-accent", "text-accent");
+          b.classList.add("border-transparent", "text-foreground/60");
+        });
+        btn.classList.add("active", "border-accent", "text-accent");
+        btn.classList.remove("border-transparent", "text-foreground/60");
+
+        tabContents.forEach(content => {
+          if (content.id === `tab-${tabTarget}`) {
+            content.classList.remove("hidden");
+            content.classList.add("block");
+          } else {
+            content.classList.remove("block");
+            content.classList.add("hidden");
+          }
+        });
+      });
+    });
+  }
+
+  initAboutTabs();
+  document.addEventListener("astro:after-swap", initAboutTabs);
+</script>

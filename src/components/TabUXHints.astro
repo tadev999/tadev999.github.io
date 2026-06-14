@@ -1,0 +1,92 @@
+---
+/**
+ * TabUXHints Component
+ * Improves tab discoverability with:
+ * 1. Pulsing dot on unvisited tabs (disappears when clicked)
+ * 2. Sequential attention-flash animation every 12s until all tabs visited
+ */
+---
+
+<style is:global>
+  /* Pulsing dot on unvisited, inactive tabs */
+  .about-tab-btn:not(.active):not(.tab-visited)::after {
+    content: '';
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    background: var(--color-accent, #f97316);
+    border-radius: 50%;
+    margin-left: 5px;
+    vertical-align: middle;
+    animation: tab-dot-pulse 1.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes tab-dot-pulse {
+    0%, 100% { opacity: 1;   transform: scale(1);   }
+    50%       { opacity: 0.3; transform: scale(0.6); }
+  }
+
+  /* Attention bounce — plays once per cycle */
+  @keyframes tab-attention {
+    0%   { background-color: transparent;                                                                  transform: translateY(0);  }
+    25%  { background-color: color-mix(in srgb, var(--color-accent, #f97316) 12%, transparent);           transform: translateY(-2px); }
+    55%  { background-color: color-mix(in srgb, var(--color-accent, #f97316) 18%, transparent);           transform: translateY(-3px); }
+    80%  { background-color: color-mix(in srgb, var(--color-accent, #f97316) 8%,  transparent);           transform: translateY(-1px); }
+    100% { background-color: transparent;                                                                  transform: translateY(0);  }
+  }
+
+  .about-tab-btn.tab-flashing {
+    animation: tab-attention 0.55s ease-in-out forwards;
+    border-radius: 6px 6px 0 0;
+  }
+</style>
+
+<script>
+  function initTabUXHints() {
+    const tabBtns = document.querySelectorAll(".about-tab-btn");
+    if (!tabBtns.length) return;
+
+    // Active tab is pre-marked as visited
+    tabBtns.forEach(function(btn) {
+      if (btn.classList.contains("active")) {
+        btn.classList.add("tab-visited");
+      }
+      // Mark as visited on click
+      btn.addEventListener("click", function() {
+        btn.classList.add("tab-visited");
+      });
+    });
+
+    // Sequential attention flash on unvisited tabs, repeats every 12s
+    function runAttentionSequence() {
+      var unvisited = Array.from(tabBtns).filter(function(btn) {
+        return !btn.classList.contains("tab-visited");
+      });
+      if (unvisited.length === 0) return; // all visited — stop
+
+      unvisited.forEach(function(btn, i) {
+        setTimeout(function() {
+          btn.classList.add("tab-flashing");
+          btn.addEventListener("animationend", function() {
+            btn.classList.remove("tab-flashing");
+          }, { once: true });
+        }, i * 350);
+      });
+
+      // Repeat after 12s if still unvisited tabs remain
+      setTimeout(function() {
+        var stillUnvisited = Array.from(tabBtns).some(function(btn) {
+          return !btn.classList.contains("tab-visited");
+        });
+        if (stillUnvisited) runAttentionSequence();
+      }, 12000);
+    }
+
+    // First run after 2s
+    setTimeout(runAttentionSequence, 2000);
+  }
+
+  initTabUXHints();
+  document.addEventListener("astro:after-swap", initTabUXHints);
+</script>
