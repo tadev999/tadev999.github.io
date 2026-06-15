@@ -3,7 +3,7 @@
   "order": {
     "index.md": 1,
     "chapter1_dev_in_the_loop.md": 2,
-    "chapter2_6_stage_pipeline.md": 3,
+    "chapter2_12_stage_pipeline.md": 3,
     "chapter3_context_and_rules.md": 4,
     "chapter4_security_and_privacy.md": 5,
     "chapter5_setup_guide.md": 6
