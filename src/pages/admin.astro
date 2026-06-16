@@ -947,13 +947,12 @@ import Footer from "@/components/Footer.astro";
         docsFields.classList.add('hidden');
         
         postAuthor.value = parsed.data.author || '';
-        
+
         // Handle date
         if (parsed.data.pubDatetime) {
           const date = new Date(parsed.data.pubDatetime);
-          // Format to local ISO for datetime-local input
-          const localISO = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
-          postDate.value = localISO;
+          // Sử dụng trực tiếp toISOString() để giữ nguyên định dạng chuẩn UTC (có chữ Z ở cuối)
+          postDate.value = date.toISOString(); 
         } else {
           postDate.value = '';
         }
