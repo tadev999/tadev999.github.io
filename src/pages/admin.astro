@@ -254,6 +254,21 @@ import Footer from "@/components/Footer.astro";
       </div>
     </div>
 
+    <!-- Delete Folder Confirmation Modal -->
+    <div id="delete-folder-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden px-4">
+      <div class="bg-background border border-border rounded-xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+        <h4 class="text-lg font-bold text-red-600 flex items-center gap-1.5">⚠️ Xác nhận xoá THƯ MỤC</h4>
+        <p class="text-sm text-foreground/80 leading-relaxed font-medium">
+          Bạn có chắc chắn muốn xoá hoàn toàn thư mục <span id="delete-folder-modal-path" class="font-mono text-xs font-bold text-red-600 bg-red-100 dark:bg-red-950/40 px-1 py-0.5 rounded"></span> và TẤT CẢ các bài viết/thư mục con bên trong nó?
+          Thao tác này sẽ xoá hoàn toàn dữ liệu trên GitHub và không thể hoàn tác.
+        </p>
+        <div class="flex justify-end gap-2 text-xs font-semibold">
+          <button id="delete-folder-modal-cancel" class="px-4 py-2 border border-border rounded hover:bg-muted text-foreground/80 transition-all">Huỷ</button>
+          <button id="delete-folder-modal-confirm" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-all">Xoá toàn bộ</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Create Folder Modal -->
     <div id="folder-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden px-4">
       <div class="bg-background border border-border rounded-xl max-w-sm w-full p-6 shadow-2xl space-y-4">
@@ -469,6 +484,13 @@ import Footer from "@/components/Footer.astro";
   const deleteModalFilename = document.getElementById('delete-modal-filename')!;
   const deleteModalCancel = document.getElementById('delete-modal-cancel')!;
   const deleteModalConfirm = document.getElementById('delete-modal-confirm')!;
+
+  const deleteFolderModal = document.getElementById('delete-folder-modal')!;
+  const deleteFolderModalPath = document.getElementById('delete-folder-modal-path')!;
+  const deleteFolderModalCancel = document.getElementById('delete-folder-modal-cancel')!;
+  const deleteFolderModalConfirm = document.getElementById('delete-folder-modal-confirm')!;
+  let currentDeleteFolderPath = '';
+  let currentDeleteFolderName = '';
 
   // Toast System
   function showToast(message: string, type: 'success' | 'error' | 'info' = 'info') {
@@ -888,14 +910,28 @@ import Footer from "@/components/Footer.astro";
       `;
       headerEl.appendChild(titleWrapper);
 
+      const actionContainer = document.createElement('div');
+      actionContainer.className = 'hidden group-hover:flex items-center gap-1 flex-shrink-0';
+
       const addSubBtn = document.createElement('span');
-      addSubBtn.className = 'hidden group-hover:inline-block px-1.5 py-0.5 text-[9px] bg-accent/20 hover:bg-accent text-accent hover:text-white rounded transition-colors font-medium flex-shrink-0';
+      addSubBtn.className = 'px-1 py-0.5 text-[9px] bg-accent/20 hover:bg-accent text-accent hover:text-white rounded transition-colors font-medium cursor-pointer';
       addSubBtn.textContent = '+ Sub';
       addSubBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         openFolderModal(child.path.replace('src/data/docs/', ''), child.name);
       });
-      headerEl.appendChild(addSubBtn);
+      actionContainer.appendChild(addSubBtn);
+
+      const deleteFolderBtn = document.createElement('span');
+      deleteFolderBtn.className = 'px-1 py-0.5 text-[9px] bg-red-600/20 hover:bg-red-600 text-red-600 hover:text-white rounded transition-colors font-medium cursor-pointer';
+      deleteFolderBtn.textContent = 'Xoá';
+      deleteFolderBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        triggerFolderDelete(child.path.replace('src/data/docs/', ''), child.name);
+      });
+      actionContainer.appendChild(deleteFolderBtn);
+
+      headerEl.appendChild(actionContainer);
       
       const childrenContainer = document.createElement('div');
       childrenContainer.className = 'hidden border-l border-border/40 ml-2.5 pl-1 my-0.5';
@@ -995,6 +1031,113 @@ import Footer from "@/components/Footer.astro";
     
     folderModal.classList.remove('hidden');
   }
+
+  // Trigger folder deletion modal
+  function triggerFolderDelete(folderPath: string, folderName: string) {
+    currentDeleteFolderPath = folderPath;
+    currentDeleteFolderName = folderName;
+    deleteFolderModalPath.textContent = folderPath;
+    deleteFolderModal.classList.remove('hidden');
+  }
+
+  // Delete Folder Modal handlers
+  deleteFolderModalCancel.addEventListener('click', () => {
+    deleteFolderModal.classList.add('hidden');
+  });
+
+  deleteFolderModalConfirm.addEventListener('click', async () => {
+    deleteFolderModal.classList.add('hidden');
+    saveSpinner.classList.remove('hidden');
+    
+    const absoluteFolderPath = `src/data/docs/${currentDeleteFolderPath}`;
+    
+    try {
+      // 1. Find all files recursively in this folder
+      const filesToDelete = repoFiles.filter(item => 
+        (item.path === absoluteFolderPath || item.path.startsWith(absoluteFolderPath + '/')) && 
+        item.type === 'blob'
+      );
+
+      if (filesToDelete.length > 0) {
+        showToast(`Đang xoá ${filesToDelete.length} file trong thư mục "${currentDeleteFolderName}"...`, 'info');
+        await Promise.all(filesToDelete.map(async (file) => {
+          const res = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${file.path}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `token ${gitToken}`,
+              'Content-Type': 'application/json',
+              'Accept': 'application/vnd.github.v3+json'
+            },
+            body: JSON.stringify({
+              message: `Delete file ${file.path} (folder deletion: ${currentDeleteFolderName})`,
+              sha: file.sha,
+              branch: BRANCH
+            })
+          });
+          if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.message || `Lỗi khi xoá file ${file.path.split('/').pop()}`);
+          }
+        }));
+      }
+
+      // 2. Remove folder slug from parent config (_meta.json)
+      const parts = currentDeleteFolderPath.split('/');
+      const slug = parts[parts.length - 1];
+      const parentCategory = parts.slice(0, -1).join('/');
+
+      const parentMetaPath = parentCategory 
+        ? `src/data/docs/${parentCategory}/_meta.json` 
+        : `src/data/docs/_meta.json`;
+
+      const parentMetaFileEntry = repoFiles.find(item => item.path === parentMetaPath);
+      if (parentMetaFileEntry) {
+        let parentMetaSha = parentMetaFileEntry.sha;
+        let parentMetaConfig: any = {};
+        
+        try {
+          const parentMetaRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${parentMetaPath}?ref=${BRANCH}`, {
+            headers: {
+              'Authorization': `token ${gitToken}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+          if (parentMetaRes.ok) {
+            const parentMetaData = await parentMetaRes.json();
+            const parentMetaUtf8 = decodeURIComponent(atob(parentMetaData.content.replace(/\s/g, '')).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            parentMetaConfig = JSON.parse(parentMetaUtf8);
+            parentMetaSha = parentMetaData.sha;
+          }
+        } catch (e) {
+          console.error('Failed to fetch parent meta config on folder delete', e);
+        }
+
+        if (parentMetaConfig.order && parentMetaConfig.order[slug] !== undefined) {
+          delete parentMetaConfig.order[slug];
+          const parentMetaContent = JSON.stringify(parentMetaConfig, null, 2);
+          showToast(`Đang cập nhật danh mục cha...`, 'info');
+          await commitFileToGitHub(parentMetaPath, parentMetaContent, `Remove subfolder ${slug} from parent meta config`, parentMetaSha);
+        }
+      }
+
+      showToast(`Đã xoá thư mục "${currentDeleteFolderName}" thành công!`, 'success');
+      
+      // Reset active document if it was inside the deleted folder
+      if (currentFile && (currentFile.path === absoluteFolderPath || currentFile.path.startsWith(absoluteFolderPath + '/'))) {
+        currentFile = null;
+        welcomePane.classList.remove('hidden');
+        editorPane.classList.add('hidden');
+      }
+
+      await fetchRepoFiles();
+    } catch (err: any) {
+      showToast(err.message, 'error');
+    } finally {
+      saveSpinner.classList.add('hidden');
+    }
+  });
 
   // Folder Modal handlers
   folderModalCancel.addEventListener('click', () => {
