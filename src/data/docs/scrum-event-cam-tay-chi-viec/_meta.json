@@ -1,6 +1,7 @@
 {
   "title": "Scrum Event - Cầm tay chỉ việc",
   "order": {
-    "scrum-events-cm-tay-ch-vic.md": 0
+    "scrum-events-cm-tay-ch-vic.md": 0,
+    "event-1-backlog-refinement.md": 1
   }
 }
