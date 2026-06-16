@@ -1,6 +1,6 @@
 ---
 title: "Dùng AI Đọc Codebase Có Tốn Credit Không? Bí Kíp Tối Ưu Chi Phí Cho Developer"
-pubDatetime: "2026-06-12T05:00:00.000Z"
+pubDatetime: 2023-09-15 09:00:00 UTC
 author: "tadev999"
 tags:
   - AI
