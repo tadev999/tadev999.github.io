@@ -1264,12 +1264,27 @@ import Footer from "@/components/Footer.astro";
         // Determine the filename
         let filename = '';
         if (currentFile.isNew) {
-          const slug = title.toLowerCase()
-            .replace(/[^a-z0-9\s-]/g, '')
-            .replace(/\s+/g, '-')
-            .replace(/-+/g, '-')
-            .trim();
-          filename = `${slug}.md`;
+          let needsIndex = isNewFolder;
+          if (!needsIndex && category) {
+            const hasIndexMd = repoFiles.some(item => 
+              item.path === `src/data/docs/${category}/index.md` || 
+              item.path === `src/data/docs/${category}/index.mdx`
+            );
+            if (!hasIndexMd) {
+              needsIndex = true;
+            }
+          }
+
+          if (needsIndex) {
+            filename = 'index.md';
+          } else {
+            const slug = title.toLowerCase()
+              .replace(/[^a-z0-9\s-]/g, '')
+              .replace(/\s+/g, '-')
+              .replace(/-+/g, '-')
+              .trim();
+            filename = `${slug}.md`;
+          }
           finalFilePath = category ? `src/data/docs/${category}/${filename}` : `src/data/docs/${filename}`;
         } else {
           finalFilePath = currentFile.path;
