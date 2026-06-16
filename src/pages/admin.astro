@@ -202,18 +202,6 @@ import Footer from "@/components/Footer.astro";
                     <input type="number" id="doc-order" value="0" class="w-full px-3 py-1.5 text-xs bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-accent" />
                   </div>
                 </div>
-
-                <!-- Custom folder inputs (shown when [Create new folder] is selected) -->
-                <div id="new-folder-inputs" class="hidden grid grid-cols-2 gap-2 p-2.5 bg-muted/30 border border-border/50 rounded">
-                  <div>
-                    <label class="block text-[9px] font-bold text-foreground/75 mb-0.5">Slug thư mục (vd: mach-6-ren-luyen)</label>
-                    <input type="text" id="new-folder-slug" placeholder="slug-folder" class="w-full px-2 py-1 text-xs bg-background border border-border rounded focus:outline-none" />
-                  </div>
-                  <div>
-                    <label class="block text-[9px] font-bold text-foreground/75 mb-0.5">Tiêu đề thư mục (vd: Mạch 6: Rèn Luyện)</label>
-                    <input type="text" id="new-folder-title" placeholder="Tiêu Đề Thư Mục" class="w-full px-2 py-1 text-xs bg-background border border-border rounded focus:outline-none" />
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -262,6 +250,34 @@ import Footer from "@/components/Footer.astro";
         <div class="flex justify-end gap-2 text-xs font-semibold">
           <button id="delete-modal-cancel" class="px-4 py-2 border border-border rounded hover:bg-muted text-foreground/80 transition-all">Huỷ</button>
           <button id="delete-modal-confirm" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition-all">Xoá ngay</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Create Folder Modal -->
+    <div id="folder-modal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center hidden px-4">
+      <div class="bg-background border border-border rounded-xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+        <h4 class="text-lg font-bold text-accent flex items-center gap-1.5">📂 Tạo thư mục con</h4>
+        <div class="space-y-3">
+          <p class="text-xs text-foreground/70">
+            Thư mục cha: <span id="folder-modal-parent-path" class="font-mono text-xs font-bold text-accent bg-accent/10 px-1 py-0.5 rounded"></span>
+          </p>
+          <div>
+            <label class="block text-[9px] font-bold text-foreground/75 mb-1">Slug thư mục con (vd: mach-6-ren-luyen)</label>
+            <input type="text" id="folder-modal-slug" placeholder="slug-folder" required class="w-full px-3 py-1.5 text-xs bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-accent" />
+          </div>
+          <div>
+            <label class="block text-[9px] font-bold text-foreground/75 mb-1">Tiêu đề thư mục con (vd: Mạch 6: Rèn Luyện)</label>
+            <input type="text" id="folder-modal-title" placeholder="Tiêu Đề Thư Mục" required class="w-full px-3 py-1.5 text-xs bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-accent" />
+          </div>
+          <div>
+            <label class="block text-[9px] font-bold text-foreground/75 mb-1">Thứ tự (Order)</label>
+            <input type="number" id="folder-modal-order" value="0" class="w-full px-3 py-1.5 text-xs bg-background border border-border rounded focus:outline-none focus:ring-1 focus:ring-accent" />
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 text-xs font-semibold">
+          <button id="folder-modal-cancel" class="px-4 py-2 border border-border rounded hover:bg-muted text-foreground/80 transition-all">Huỷ</button>
+          <button id="folder-modal-confirm" class="px-4 py-2 bg-accent hover:bg-accent/90 text-white rounded transition-all">OK</button>
         </div>
       </div>
     </div>
@@ -377,6 +393,7 @@ import Footer from "@/components/Footer.astro";
   // State
   let gitToken = '';
   let repoFiles: any[] = [];
+  let metaConfigs: Record<string, any> = {};
   let existingTags: string[] = [];
   let activeTab: 'blog' | 'docs' = 'blog';
   
@@ -434,9 +451,14 @@ import Footer from "@/components/Footer.astro";
   const docsFields = document.getElementById('docs-fields')!;
   const docCategory = document.getElementById('doc-category') as HTMLSelectElement;
   const docOrder = document.getElementById('doc-order') as HTMLInputElement;
-  const newFolderInputs = document.getElementById('new-folder-inputs')!;
-  const newFolderSlug = document.getElementById('new-folder-slug') as HTMLInputElement;
-  const newFolderTitle = document.getElementById('new-folder-title') as HTMLInputElement;
+  const folderModal = document.getElementById('folder-modal')!;
+  const folderModalParentPath = document.getElementById('folder-modal-parent-path')!;
+  const folderModalSlug = document.getElementById('folder-modal-slug') as HTMLInputElement;
+  const folderModalTitle = document.getElementById('folder-modal-title') as HTMLInputElement;
+  const folderModalOrder = document.getElementById('folder-modal-order') as HTMLInputElement;
+  const folderModalCancel = document.getElementById('folder-modal-cancel')!;
+  const folderModalConfirm = document.getElementById('folder-modal-confirm')!;
+  let currentModalParentPath = '';
 
   const saveBtn = document.getElementById('save-btn')!;
   const saveSpinner = document.getElementById('save-spinner')!;
@@ -566,6 +588,38 @@ import Footer from "@/components/Footer.astro";
 
       const data = await res.json();
       repoFiles = data.tree || [];
+
+      // Clear previous configs
+      metaConfigs = {};
+
+      // Filter all _meta.json files under src/data/docs/
+      const metaEntries = repoFiles.filter(item => 
+        item.path.startsWith('src/data/docs/') && 
+        item.path.endsWith('_meta.json') && 
+        item.type === 'blob'
+      );
+
+      if (metaEntries.length > 0) {
+        await Promise.all(metaEntries.map(async (entry) => {
+          try {
+            const mRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${entry.path}?ref=${BRANCH}`, {
+              headers: {
+                'Authorization': `token ${gitToken}`,
+                'Accept': 'application/vnd.github.v3+json'
+              }
+            });
+            if (mRes.ok) {
+              const mData = await mRes.json();
+              const utf8 = decodeURIComponent(atob(mData.content.replace(/\s/g, '')).split('').map(function(c) {
+                  return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+              }).join(''));
+              metaConfigs[entry.path] = JSON.parse(utf8);
+            }
+          } catch (e) {
+            console.error(`Failed to fetch meta config for ${entry.path}:`, e);
+          }
+        }));
+      }
       
       // Parse tags
       extractExistingTags();
@@ -772,8 +826,20 @@ import Footer from "@/components/Footer.astro";
       // Docs mode
       const docsTree = buildDocsTree(repoFiles);
       
+      // Add a Root Folder creation button at the top of the tree list
+      const rootAddBtn = document.createElement('button');
+      rootAddBtn.className = 'w-full text-left flex items-center justify-center gap-1.5 py-1.5 px-2.5 hover:bg-muted/40 rounded transition-colors text-xs font-bold text-accent mb-2 border border-dashed border-accent/30 bg-accent/5';
+      rootAddBtn.innerHTML = `➕ Thư mục gốc (Root Category)`;
+      rootAddBtn.addEventListener('click', () => {
+        openFolderModal('', 'Thư mục gốc / Root');
+      });
+      filesListContainer.appendChild(rootAddBtn);
+
       if (Object.keys(docsTree.children).length === 0 && docsTree.files.length === 0) {
-        filesListContainer.innerHTML = '<div class="text-center py-8 text-foreground/50 text-xs">Không tìm thấy tài liệu nào.</div>';
+        const emptyMsg = document.createElement('div');
+        emptyMsg.className = 'text-center py-8 text-foreground/50 text-xs';
+        emptyMsg.textContent = 'Không tìm thấy tài liệu nào.';
+        filesListContainer.appendChild(emptyMsg);
         return;
       }
       
@@ -787,8 +853,22 @@ import Footer from "@/components/Footer.astro";
   // Recursive folder tree render in sidebar
   function renderFolderTree(node: any, container: HTMLElement, level = 0) {
     const childrenKeys = Object.keys(node.children);
-    childrenKeys.sort();
-    node.files.sort((a: any, b: any) => a.name.localeCompare(b.name));
+    const metaPath = (node.name === 'root' || !node.path) ? 'src/data/docs/_meta.json' : `${node.path}/_meta.json`;
+    const orderConfig = (metaConfigs && metaConfigs[metaPath]?.order) || {};
+
+    childrenKeys.sort((a, b) => {
+      const orderA = a in orderConfig ? orderConfig[a] : 999999;
+      const orderB = b in orderConfig ? orderConfig[b] : 999999;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.localeCompare(b);
+    });
+
+    node.files.sort((a: any, b: any) => {
+      const orderA = a.name in orderConfig ? orderConfig[a.name] : 999999;
+      const orderB = b.name in orderConfig ? orderConfig[b.name] : 999999;
+      if (orderA !== orderB) return orderA - orderB;
+      return a.name.localeCompare(b.name);
+    });
     
     // Directories
     for (const key of childrenKeys) {
@@ -797,12 +877,25 @@ import Footer from "@/components/Footer.astro";
       folderEl.className = 'py-0.5';
       
       const headerEl = document.createElement('button');
-      headerEl.className = 'w-full text-left flex items-center gap-1.5 py-1 px-1.5 hover:bg-muted/40 rounded transition-colors text-xs font-semibold text-foreground/90';
+      headerEl.className = 'w-full text-left flex items-center justify-between gap-1.5 py-1 px-1.5 hover:bg-muted/40 rounded transition-colors text-xs font-semibold text-foreground/90 group';
       headerEl.style.paddingLeft = `${level * 10 + 6}px`;
-      headerEl.innerHTML = `
+      
+      const titleWrapper = document.createElement('div');
+      titleWrapper.className = 'flex items-center gap-1.5 truncate';
+      titleWrapper.innerHTML = `
         <svg class="w-3 h-3 text-accent transition-transform transform rotate-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
         <span>📂 ${child.name}</span>
       `;
+      headerEl.appendChild(titleWrapper);
+
+      const addSubBtn = document.createElement('span');
+      addSubBtn.className = 'hidden group-hover:inline-block px-1.5 py-0.5 text-[9px] bg-accent/20 hover:bg-accent text-accent hover:text-white rounded transition-colors font-medium flex-shrink-0';
+      addSubBtn.textContent = '+ Sub';
+      addSubBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openFolderModal(child.path.replace('src/data/docs/', ''), child.name);
+      });
+      headerEl.appendChild(addSubBtn);
       
       const childrenContainer = document.createElement('div');
       childrenContainer.className = 'hidden border-l border-border/40 ml-2.5 pl-1 my-0.5';
@@ -862,25 +955,151 @@ import Footer from "@/components/Footer.astro";
       opt.textContent = folder;
       docCategory.appendChild(opt);
     });
-
-    // Option to create new
-    const newOpt = document.createElement('option');
-    newOpt.value = '__new__';
-    newOpt.textContent = '➕ [Tạo thư mục con mới...]';
-    docCategory.appendChild(newOpt);
   }
+
+  // Get next order value for a category using parsed _meta.json configs
+  function getNextOrderForCategory(categoryPath: string) {
+    const metaPath = categoryPath ? `src/data/docs/${categoryPath}/_meta.json` : 'src/data/docs/_meta.json';
+    const config = metaConfigs[metaPath];
+    if (!config || !config.order) {
+      return 1;
+    }
+    const values = Object.values(config.order).map(v => Number(v)).filter(v => !isNaN(v));
+    if (values.length === 0) {
+      return 1;
+    }
+    return Math.max(...values) + 1;
+  }
+
+  // Calculate default order automatically for new files
+  function calculateDefaultOrder() {
+    if (!currentFile || !currentFile.isNew) return;
+    const category = docCategory.value;
+    docOrder.value = String(getNextOrderForCategory(category));
+  }
+
+  // Calculate default order automatically for folders in modal
+  function calculateFolderDefaultOrder(parentFolder: string) {
+    return getNextOrderForCategory(parentFolder);
+  }
+
+  // Open Folder Modal
+  function openFolderModal(parentPath: string, parentName: string) {
+    currentModalParentPath = parentPath;
+    folderModalParentPath.textContent = parentPath || '[Thư mục gốc / Root]';
+    folderModalSlug.value = '';
+    folderModalTitle.value = '';
+    
+    const nextOrder = calculateFolderDefaultOrder(parentPath);
+    folderModalOrder.value = String(nextOrder);
+    
+    folderModal.classList.remove('hidden');
+  }
+
+  // Folder Modal handlers
+  folderModalCancel.addEventListener('click', () => {
+    folderModal.classList.add('hidden');
+  });
+
+  folderModalConfirm.addEventListener('click', async () => {
+    const slugPart = folderModalSlug.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
+    const folderTitle = folderModalTitle.value.trim();
+    const order = parseInt(folderModalOrder.value) || 0;
+
+    if (!slugPart || !folderTitle) {
+      showToast('Vui lòng nhập đầy đủ Slug và Tiêu đề!', 'error');
+      return;
+    }
+
+    folderModalConfirm.setAttribute('disabled', 'true');
+    folderModalCancel.setAttribute('disabled', 'true');
+    const originalBtnText = folderModalConfirm.textContent;
+    folderModalConfirm.textContent = 'Đang tạo...';
+
+    const categoryPath = currentModalParentPath ? `${currentModalParentPath}/${slugPart}` : slugPart;
+
+    try {
+      const isRootCategory = (currentModalParentPath === '');
+
+      // 1. Create _meta.json for new folder
+      const metaPath = `src/data/docs/${categoryPath}/_meta.json`;
+      const metaConfig = {
+        title: folderTitle,
+        order: isRootCategory ? { "index.md": 1 } : {}
+      };
+      const metaContent = JSON.stringify(metaConfig, null, 2);
+      showToast(`Đang cấu hình chuyên mục: "${folderTitle}"...`, 'info');
+      await commitFileToGitHub(metaPath, metaContent, `Create meta config for ${categoryPath}`, null);
+
+      if (isRootCategory) {
+        // 2. Create index.md landing page inside new folder (only for root categories)
+        const indexPath = `src/data/docs/${categoryPath}/index.md`;
+        const indexFrontmatter = {
+          title: folderTitle,
+          description: `Trang giới thiệu cho chuyên mục ${folderTitle}`,
+          order: 1
+        };
+        const indexContent = stringifyFrontmatter(indexFrontmatter) + `\n\n# ${folderTitle}\n\nChào mừng bạn đến với chuyên mục **${folderTitle}**.`;
+        showToast(`Đang tạo trang bìa index.md...`, 'info');
+        await commitFileToGitHub(indexPath, indexContent, `Create landing page index.md for ${categoryPath}`, null);
+      }
+
+      // 3. Update parent folder's _meta.json to include new subfolder with correct order
+      const parentMetaPath = currentModalParentPath 
+        ? `src/data/docs/${currentModalParentPath}/_meta.json` 
+        : `src/data/docs/_meta.json`;
+
+      const parentMetaFileEntry = repoFiles.find(item => item.path === parentMetaPath);
+      let parentMetaSha = null;
+      let parentMetaConfig: any = {};
+
+      if (parentMetaFileEntry) {
+        parentMetaSha = parentMetaFileEntry.sha;
+        try {
+          const parentMetaRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${parentMetaPath}?ref=${BRANCH}`, {
+            headers: {
+              'Authorization': `token ${gitToken}`,
+              'Accept': 'application/vnd.github.v3+json'
+            }
+          });
+          if (parentMetaRes.ok) {
+            const parentMetaData = await parentMetaRes.json();
+            const parentMetaUtf8 = decodeURIComponent(atob(parentMetaData.content.replace(/\s/g, '')).split('').map(function(c) {
+                return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+            }).join(''));
+            parentMetaConfig = JSON.parse(parentMetaUtf8);
+            parentMetaSha = parentMetaData.sha;
+          }
+        } catch (e) {
+          console.error('Failed to fetch parent meta config on folder creation', e);
+        }
+      }
+
+      parentMetaConfig.title = parentMetaConfig.title || (currentModalParentPath ? currentModalParentPath.split('/').pop()!.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Articles');
+      parentMetaConfig.order = parentMetaConfig.order || {};
+      parentMetaConfig.order[slugPart] = order;
+
+      const parentMetaContent = JSON.stringify(parentMetaConfig, null, 2);
+      showToast(`Đang cập nhật cấu hình sắp xếp của thư mục cha...`, 'info');
+      await commitFileToGitHub(parentMetaPath, parentMetaContent, `Add subfolder ${slugPart} to parent meta config`, parentMetaSha);
+
+      showToast(`Đã tạo thư mục con "${folderTitle}" thành công!`, 'success');
+      folderModal.classList.add('hidden');
+      
+      // Reload file tree
+      await fetchRepoFiles();
+    } catch (err: any) {
+      showToast(err.message, 'error');
+    } finally {
+      folderModalConfirm.removeAttribute('disabled');
+      folderModalCancel.removeAttribute('disabled');
+      folderModalConfirm.textContent = originalBtnText;
+    }
+  });
 
   // Toggle dynamic fields
   docCategory.addEventListener('change', () => {
-    if (docCategory.value === '__new__') {
-      newFolderInputs.classList.remove('hidden');
-      newFolderSlug.required = true;
-      newFolderTitle.required = true;
-    } else {
-      newFolderInputs.classList.add('hidden');
-      newFolderSlug.required = false;
-      newFolderTitle.required = false;
-    }
+    calculateDefaultOrder();
   });
 
   // Tab switches
@@ -1245,27 +1464,11 @@ import Footer from "@/components/Footer.astro";
           order
         };
 
-        let isNewFolder = false;
-        let folderTitle = '';
-
-        if (category === '__new__') {
-          // User is creating a new directory!
-          const folderSlug = newFolderSlug.value.trim().toLowerCase().replace(/[^a-z0-9-]/g, '');
-          folderTitle = newFolderTitle.value.trim();
-          
-          if (!folderSlug || !folderTitle) {
-            throw new Error('Vui lòng nhập đầy đủ Slug và Tiêu đề cho thư mục mới!');
-          }
-
-          category = folderSlug;
-          isNewFolder = true;
-        }
-
         // Determine the filename
         let filename = '';
         if (currentFile.isNew) {
-          let needsIndex = isNewFolder;
-          if (!needsIndex && category) {
+          let needsIndex = false;
+          if (category) {
             const hasIndexMd = repoFiles.some(item => 
               item.path === `src/data/docs/${category}/index.md` || 
               item.path === `src/data/docs/${category}/index.mdx`
@@ -1291,20 +1494,8 @@ import Footer from "@/components/Footer.astro";
           filename = finalFilePath.split('/').pop()!;
         }
 
-        // Save _meta.json for new folder or update existing folder meta
-        if (isNewFolder) {
-          const metaPath = `src/data/docs/${category}/_meta.json`;
-          const metaConfig = {
-            title: folderTitle,
-            order: {
-              [filename]: order
-            }
-          };
-          const metaContent = JSON.stringify(metaConfig, null, 2);
-          
-          showToast(`Đang tạo thư mục mới: "${folderTitle}"...`, 'info');
-          await commitFileToGitHub(metaPath, metaContent, `create category config for ${category}`, null);
-        } else if (category) {
+        // Update existing folder metadata
+        if (category) {
           const metaPath = `src/data/docs/${category}/_meta.json`;
           const metaFileEntry = repoFiles.find(item => item.path === metaPath);
           
@@ -1345,6 +1536,51 @@ import Footer from "@/components/Footer.astro";
           const metaContent = JSON.stringify(metaConfig, null, 2);
           showToast(`Đang cập nhật cấu hình thứ tự trong thư mục...`, 'info');
           await commitFileToGitHub(metaPath, metaContent, `Update ordering in ${category} meta config`, metaSha);
+
+          // If this is the index page of a category, also update its parent's _meta.json
+          if (filename === 'index.md' || filename === 'index.mdx') {
+            const categoryParts = category.split('/');
+            const parentCategory = categoryParts.slice(0, -1).join('/');
+            const childSlug = categoryParts[categoryParts.length - 1];
+
+            const parentMetaPath = parentCategory 
+              ? `src/data/docs/${parentCategory}/_meta.json` 
+              : `src/data/docs/_meta.json`;
+
+            const parentMetaFileEntry = repoFiles.find(item => item.path === parentMetaPath);
+            let parentMetaSha = null;
+            let parentMetaConfig: any = {};
+
+            if (parentMetaFileEntry) {
+              parentMetaSha = parentMetaFileEntry.sha;
+              try {
+                const parentMetaRes = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/${parentMetaPath}?ref=${BRANCH}`, {
+                  headers: {
+                    'Authorization': `token ${gitToken}`,
+                    'Accept': 'application/vnd.github.v3+json'
+                  }
+                });
+                if (parentMetaRes.ok) {
+                  const parentMetaData = await parentMetaRes.json();
+                  const parentMetaUtf8 = decodeURIComponent(atob(parentMetaData.content.replace(/\s/g, '')).split('').map(function(c) {
+                      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                  }).join(''));
+                  parentMetaConfig = JSON.parse(parentMetaUtf8);
+                  parentMetaSha = parentMetaData.sha;
+                }
+              } catch (e) {
+                console.error('Failed to fetch parent meta config on update', e);
+              }
+            }
+
+            parentMetaConfig.title = parentMetaConfig.title || (parentCategory ? parentCategory.split('/').pop()!.replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase()) : 'Articles');
+            parentMetaConfig.order = parentMetaConfig.order || {};
+            parentMetaConfig.order[childSlug] = order;
+
+            const parentMetaContent = JSON.stringify(parentMetaConfig, null, 2);
+            showToast(`Đang cập nhật cấu hình danh mục cha...`, 'info');
+            await commitFileToGitHub(parentMetaPath, parentMetaContent, `Update ${childSlug} in parent meta config`, parentMetaSha);
+          }
         }
       }
 

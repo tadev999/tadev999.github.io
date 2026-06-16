@@ -1,11 +1,12 @@
 {
   "title": "Articles",
   "order": {
-    "vibe-coding": 0,
-    "ticket2code": 1,
-    "project-management": 2,
-    "multi-agent-antigravity": 3,
-    "git-workflow": 4,
-    "endogenism": 5
+    "scrum-event-cam-tay-chi-viec": 0,
+    "vibe-coding": 1,
+    "endogenism": 2,
+    "ticket2code": 3,
+    "project-management": 4,
+    "multi-agent-antigravity": 5,
+    "git-workflow": 6
   }
 }
