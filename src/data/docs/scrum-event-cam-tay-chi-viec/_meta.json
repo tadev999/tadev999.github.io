@@ -2,6 +2,7 @@
   "title": "Scrum Event - Cầm tay chỉ việc",
   "order": {
     "index.md": 0,
-    "event-1-backlog-refinement.md": 1
+    "event-1-backlog-refinement.md": 1,
+    "event-2-sprint-planning-1.md": 2
   }
 }
