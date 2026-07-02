@@ -66,7 +66,7 @@ let label = JapaneseLineHeightLabel()
 label.font = .systemFont(ofSize: 16)
 label.lineHeight = 32
 label.customBaselineOffset = 0
-label.text = "受け取り完了"
+label.text = "Hello World"
 ```
 
 ## 5. Recommended Tuning Strategy
