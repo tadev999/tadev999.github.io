@@ -1,5 +1,5 @@
 ---
-title: "\\"Chữa lành\\" — hay là một cách khác để không phải đối diện với thứ đang thực sự xảy ra bên trong bạn?"
+title: '"Chữa lành" — hay là một cách khác để không phải đối diện với thứ đang thực sự xảy ra bên trong bạn?'
 description: ""
 order: 20
 ---
