@@ -1,11 +1,11 @@
 ---
-title: "Gửi bạn, người đang muốn biến mất khỏi thế giới này một vài ngày: tôi nghe thấy bạn."
+title: "Điều duy nhất bạn cần làm lúc này là thừa nhận — và đó đã là đủ rồi."
 description: ""
 order: 30
 ---
 
 
-# Gửi bạn, người đang muốn biến mất khỏi thế giới này một vài ngày: tôi nghe thấy bạn.
+# Điều duy nhất bạn cần làm lúc này là thừa nhận — và đó đã là đủ rồi.
 
 *Bài 30 / Mạch 1: Gọi Tên*
 
