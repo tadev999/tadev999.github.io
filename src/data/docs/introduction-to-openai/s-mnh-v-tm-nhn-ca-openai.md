@@ -5,6 +5,7 @@ order: 2
 ---
 
 
+
 Sứ mệnh của OpenAI là điểm khởi đầu để hiểu về tổ chức này cũng như cách đại diện cho họ trong các cuộc thảo luận với khách hàng
 
 ## Sứ mệnh của OpenAI:
@@ -50,3 +51,23 @@ Họ có thể muốn nâng cao năng suất, hỗ trợ đưa ra quyết địn
 Với vai trò là đối tác, nhiệm vụ của bạn là luôn duy trì sự chú ý cân bằng giữa giá trị thực tế cho khách hàng và việc triển khai AI một cách có trách nhiệm.
 
 AI nên được thảo luận dựa trên giá trị mang lại cho khách hàng, nhưng không được bỏ qua các yếu tố về trách nhiệm, an toàn, quản trị hoặc sự giám sát của con người.
+
+## Vai trò của đối tác trong việc mở rộng sứ mệnh của OpenAI
+Các đối tác giúp chuyển hóa các năng lực của OpenAI thành các giải pháp phù hợp với bối cảnh cụ thể của từng khách hàng.
+Kỹ năng dịch chuyển đó là một năng lực thiết yếu của đối tác. Khách hàng có thể hiểu rằng AI rất mạnh mẽ, nhưng họ vẫn mơ hồ về việc nên bắt đầu từ đâu.
+
+Họ có thể có sự quan tâm chung chung, một danh sách các trường hợp sử dụng tiềm năng, hoặc áp lực từ cấp lãnh đạo về việc phải “làm điều gì đó với AI”. Nếu thiếu đi định hướng rõ ràng, những cuộc thảo luận đó rất dễ biến thành việc chạy theo tính năng, mơ hồ hoặc tự tin thái quá.
+
+>Partners help by connecting OpenAI’s mission and capabilities to customer-recognized problems.
+
+Điều đó có nghĩa là bạn cần đặt ra những câu hỏi như:
+
+Doanh nghiệp đang cố gắng giải quyết bài toán kinh doanh nào?
+
+. Quy trình làm việc, đội ngũ hoặc công đoạn nào sẽ chịu ảnh hưởng?
+
+. Kết quả như thế nào sẽ được khách hàng công nhận là thực sự có ý nghĩa?
+
+. Những yếu tố nào cần được xác minh trước khi đề xuất lộ trình giải pháp?
+
+. Trách nhiệm cụ thể của từng bên — OpenAI, đối tác và khách hàng — là gì?
