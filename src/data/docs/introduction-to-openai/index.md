@@ -6,9 +6,12 @@ order: 1
 
 
 
+
 # Giới thiệu về Open AI
 
 Khi tìm hiểu về OpenAI lần đầu tiên, khách hàng thường quan tâm đến nhiều điều hơn là chỉ một sản phẩm đơn thuần. Họ có thể muốn hiểu OpenAI đại diện cho sứ mệnh gì, tại sao các tổ chức lại đang đầu tư vào AI, OpenAI tiếp cận việc sử dụng AI có trách nhiệm như thế nào, và các đối tác có thể đồng hành, hỗ trợ họ ra sao.
+
+Khóa học này cung cấp cho bạn nền tảng thực tiễn cho những cuộc trao đổi ban đầu đó. Bạn sẽ tìm hiểu về sứ mệnh, quá trình phát triển, vai trò của OpenAI trong hệ sinh thái AI và tầm quan trọng của các đối tác, với trọng tâm là giải thích về OpenAI một cách rõ ràng, tránh nói quá về sản phẩm, quyền riêng tư, sự an toàn hay kết quả kinh doanh.
 
 ## Sau khóa học, bạn sẽ có thể
 Giải thích được sứ mệnh, tầm nhìn, quá trình phát triển và định hướng hoạt động của OpenAI.
