@@ -1,8 +1,9 @@
 ---
-title: "Giới thiệu về Open AI"
+title: "Khóa học Đối tác Open AI"
 description: "Trang giới thiệu cho chuyên mục Giới thiệu về Open AI"
 order: 1
 ---
+
 
 
 
