@@ -7,6 +7,7 @@ order: 2
 
 
 
+
 Sứ mệnh của OpenAI là điểm khởi đầu để hiểu về tổ chức này cũng như cách đại diện cho họ trong các cuộc thảo luận với khách hàng
 
 ## Sứ mệnh của OpenAI:
@@ -82,4 +83,14 @@ Có thể áp dụng một phép thử thực tế ở đây:
 Điều đó không có nghĩa là mọi cuộc trao đổi ban đầu đều phải đưa ra ngay một giải pháp hoàn chỉnh. Nó có nghĩa là đối tác nên tránh đi thẳng từ sứ mệnh của OpenAI sang đề xuất sản phẩm. Lộ trình vững chắc hơn là:
 >Mission -> Customer problem -> Workflow context -> Responsible exploratin -> Possible AI path
 
-Use this flow to keep early OpenAI conversations grounded: start with OpenAI’s mission, connect it to the customer problem, clarify the workflow context, explore responsibly, and only then discuss a possible OpenAI path.
+Hãy sử dụng quy trình này để giữ cho các cuộc thảo luận ban đầu về OpenAI luôn bám sát thực tế:
+
+. Sứ mệnh của OpenAI: Bắt đầu bằng sứ mệnh cốt lõi của OpenAI (AI an toàn, mang lại lợi ích cho nhân loại).
+
+. Bài toán của khách hàng: Kết nối sứ mệnh đó với bài toán kinh doanh cụ thể mà khách hàng đang gặp phải.
+
+. Bối cảnh quy trình: Làm rõ bối cảnh công việc, quy trình và đội ngũ sẽ chịu ảnh hưởng.
+
+. Khám phá có trách nhiệm: Thảo luận về cách triển khai an toàn, quản trị và kiểm soát rủi ro.
+
+. Lộ trình giải pháp: Chỉ khi đã làm rõ các yếu tố trên mới đi đến đề xuất lộ trình OpenAI phù hợp.
