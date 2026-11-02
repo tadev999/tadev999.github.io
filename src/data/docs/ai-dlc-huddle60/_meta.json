@@ -1,0 +1,16 @@
+{
+  "title": "AI-DLC cùng Huddle60",
+  "order": {
+    "index.md": 0,
+    "bai-01-nghich-ly-ai-viet-code-nhanh-nhung-ship-van-cham.md": 1,
+    "bai-02-tro-choi-tam-sao-that-ban-giua-po-va-dev-thoi-ai.md": 2,
+    "bai-03-thay-doi-tuduy-tu-tho-go-code-sang-ai-dlc.md": 3,
+    "bai-04-cai-bay-chia-task-ngang-va-suc-manh-vertical-slice.md": 4,
+    "bai-05-tai-sao-monorepo-la-vua-trong-ky-nguyen-ai-agent.md": 5,
+    "bai-06-hiem-hoa-sua-trom-requirement-va-giai-phap-hash-lock.md": 6,
+    "bai-07-triet-ly-zero-database-va-hoi-y-60-giay-thay-the-hop-hanh.md": 7,
+    "bai-08-gioi-thieu-huddle60-he-dieu-hanh-ai-dlc-cho-github.md": 8,
+    "bai-09-ben-duoi-nap-capo-huddle60-multimodal-planning-va-git-evidence.md": 9,
+    "bai-10-tuong-lai-phat-trien-phan-mem-doi-hinh-1-po-1-dev-va-ai-agents.md": 10
+  }
+}
